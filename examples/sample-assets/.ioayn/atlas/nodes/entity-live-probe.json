@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.1",
+  "id": "entity-live-probe",
+  "type": "code_entity",
+  "label": "live_probe()",
+  "description": "消费目标字符串并产出当前样例中的存活布尔结果。",
+  "ref_type": "code_entity",
+  "ref_id": "live-probe",
+  "system_area": "engine/live-probe",
+  "status": {
+    "model": "modeled",
+    "connection": "connected",
+    "freshness": "current",
+    "unknowns": "clear"
+  },
+  "tags": [
+    "function"
+  ],
+  "evidence_refs": [
+    "round-live-probe-1-evidence-1"
+  ],
+  "unknown_refs": [],
+  "revision": {
+    "branch": "master",
+    "commit": "a8d4d8f2fb0b7a509855b510d5c9af5599391794",
+    "dirty": true
+  },
+  "created_at": "2026-07-21T11:09:42.721Z",
+  "updated_at": "2026-07-21T11:09:42.721Z"
+}

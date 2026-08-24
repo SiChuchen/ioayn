@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.1",
+  "id": "asset-target-main-path",
+  "goal_id": "understand-target-io",
+  "slice_id": "target-main-path",
+  "type": "flow_understanding",
+  "title": "目标主输入输出路径",
+  "question": "输入如何经过当前范围形成输出？",
+  "body_markdown": "入口输入由上游提供。首个消费者验证并转换该输入，随后把 OutputType 交给下游消费者。此解释是可复用的教学正文，不能只保存标题或结论。",
+  "source_turn_refs": [],
+  "context": {
+    "system_area": "system/target-area",
+    "abstraction_level": "L2"
+  },
+  "input": {
+    "source": "observable-input",
+    "type": "InputType",
+    "meaning": "需要被系统消费的入口数据"
+  },
+  "output": {
+    "consumer": "downstream-consumer",
+    "type": "OutputType",
+    "meaning": "当前切片产生的结果"
+  },
+  "key_entities": [
+    {
+      "id": "first-consumer",
+      "name": "首个消费者",
+      "kind": "module",
+      "role": "消费入口输入并产出下游表示。",
+      "input": "InputType",
+      "action": "验证并转换",
+      "output": "OutputType",
+      "map": false
+    }
+  ],
+  "concepts": [
+    "producer-consumer",
+    "representation-boundary"
+  ],
+  "claims": [],
+  "evidence_refs": [],
+  "unknown_refs": [],
+  "learned_from": {
+    "session_id": "session-target",
+    "round_id": "round-target-1"
+  },
+  "atlas_node_id": "atlas-asset-target-main-path",
+  "status": "draft",
+  "revision": {
+    "branch": "main",
+    "commit": "0000000",
+    "dirty": false
+  },
+  "created_at": "2026-01-01T00:00:00.000Z",
+  "updated_at": "2026-01-01T00:00:00.000Z"
+}

@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.1",
+  "id": "area-engine-live-probe",
+  "type": "system_area",
+  "label": "live-probe",
+  "description": "System area: engine/live-probe",
+  "ref_type": "system_area",
+  "ref_id": "area-engine-live-probe",
+  "system_area": "engine/live-probe",
+  "status": {
+    "model": "modeled",
+    "connection": "connected",
+    "freshness": "current",
+    "unknowns": "clear"
+  },
+  "tags": [
+    "system-area"
+  ],
+  "evidence_refs": [],
+  "unknown_refs": [],
+  "revision": {
+    "branch": "master",
+    "commit": "a8d4d8f2fb0b7a509855b510d5c9af5599391794",
+    "dirty": true
+  },
+  "created_at": "2026-07-21T11:09:42.710Z",
+  "updated_at": "2026-07-21T11:09:42.710Z"
+}

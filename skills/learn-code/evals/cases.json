@@ -1,0 +1,202 @@
+{
+  "version": "1.1",
+  "cases": [
+    {
+      "name": "persistent-preflight-and-levels",
+      "prompt": "带我理解这个引擎如何接收任务并输出结果",
+      "assertions": [
+        "在分析仓库前尝试 MCP preflight，并明确显示 PERSISTENT 或 DEGRADED 模式",
+        "确认起始抽象层级与目标抽象层级，未指定时从 L1 或 L2 开始",
+        "先定义学习目标、范围、暂不研究内容和完成标准",
+        "不会默认从最深函数细节开始"
+      ]
+    },
+    {
+      "name": "bounded-feature-flow",
+      "prompt": "带我理解用户提交任务后是怎么进入执行器的",
+      "assertions": [
+        "不从整个目录树或 main 开始总结",
+        "主视图不超过 8 个关键流节点",
+        "本轮默认不超过 5 个新实体、3 个文件和 3 个新概念",
+        "超出预算前先给出子层选择",
+        "提出一个标注当前抽象层级的 checkpoint"
+      ]
+    },
+    {
+      "name": "contextual-role-required",
+      "prompt": "继续展开 sender、receiver、entry 和结果队列之间的关系",
+      "assertions": [
+        "每个首次出现的函数、线程、队列或结构体都有当前切片中的角色描述",
+        "角色至少包含输入、动作、输出或副作用",
+        "图和列表中不存在只有名称而没有角色的陌生节点",
+        "角色描述针对当前路径而不是通用字典定义"
+      ]
+    },
+    {
+      "name": "claims-and-unknown-ledger",
+      "prompt": "根据目前代码判断这个队列是不是 fork 后真正的 IPC 通道",
+      "assertions": [
+        "把直接源码支持的内容标为 FACT",
+        "把从多个事实归纳的解释标为 INFERENCE 并列出 basis",
+        "证据不足时标为 UNKNOWN 或 CONFLICT",
+        "重要结论都带 high、medium 或 low confidence",
+        "unknown 显式分类为 blocking、non_blocking 或 deferred"
+      ]
+    },
+    {
+      "name": "local-symbol-only",
+      "prompt": "我只想搞懂 SchedulingContext 这个结构体在当前调度流程里的作用",
+      "assertions": [
+        "不要求理解整个调度系统",
+        "先说明该结构体的生产者、消费者和当前路径中被消费的字段",
+        "将与当前问题无关的字段标记为 non_blocking 或 deferred",
+        "只在当前层无法回答问题时继续下钻"
+      ]
+    },
+    {
+      "name": "checkpoint-level-consistency",
+      "prompt": "我目前只理解到模块级，请继续问我一个检查问题",
+      "assertions": [
+        "checkpoint 标注 L0 到 L5 层级",
+        "问题不要求尚未介绍的更低层并发、协议或内存机制",
+        "不使用是否理解这种是非题",
+        "在用户作答前不直接泄露答案"
+      ]
+    },
+    {
+      "name": "round-persistence-and-atlas-delta",
+      "prompt": "这一轮我已经理解了，请保存并告诉我它在项目中的位置",
+      "assertions": [
+        "PERSISTENT 模式下调用 commit_learning_round",
+        "保存 checkpoint、用户答案、claims、evidence、unknowns 和 LearningAsset",
+        "提交失败时明确说明本轮无法恢复",
+        "提交成功后展示 Atlas location、历史连接、共享概念和当前 gap",
+        "Atlas 投影默认不超过 12 个节点"
+      ]
+    },
+    {
+      "name": "historical-connection",
+      "prompt": "今天学的存活探测和昨天学的任务调度有什么关系",
+      "assertions": [
+        "查询已有 LearningAsset 或 Atlas 历史连接",
+        "说明连接依据是共享概念、实体、I/O、状态还是显式 relation",
+        "不因为名称相似就把连接陈述为高置信事实",
+        "能够显示 REFINES、CONNECTS_TO、CONTRADICTS 或 SUPERSEDES 等关系"
+      ]
+    },
+    {
+      "name": "error-path",
+      "prompt": "带我追踪这个超时错误是怎么产生并返回给调用方的",
+      "assertions": [
+        "以错误表现、日志或堆栈作为可观察入口",
+        "追踪错误产生、转换、传播和最终消费",
+        "优先寻找测试、日志或运行证据",
+        "静态推断不得冒充运行时验证"
+      ]
+    },
+    {
+      "name": "resume-session",
+      "prompt": "继续昨天没有学完的内容",
+      "assertions": [
+        "调用 resume_learning_context",
+        "区分已提交轮次与仅存在于未提交对话中的内容",
+        "展示当前层级、blocking unknown、Atlas 位置和推荐路径",
+        "不会从零重新生成整份项目介绍"
+      ]
+    },
+    {
+      "name": "avoid-report-dump",
+      "prompt": "学习这个大型项目",
+      "assertions": [
+        "缩小为最小有用初始切片",
+        "不会立即生成完整项目报告或全仓库图",
+        "只在存在实质性多义性时询问澄清",
+        "将 Atlas 和文档视为有边界的派生视图"
+      ]
+    },
+    {
+      "name": "first-contact-calibration",
+      "prompt": "我是第一次接触这个项目，帮我学一下",
+      "assertions": [
+        "先检查是否存在历史 LearningAsset 或 Atlas 节点，而不是直接开始教学",
+        "零存量时用不超过三个大白话问题校准对项目的熟悉程度",
+        "没用过产品也没读过源码的学习者从 L0 最外层可观察输入输出开始",
+        "第一轮不呈现跨多层边界的完整系统剖面"
+      ]
+    },
+    {
+      "name": "returning-learner-bridge",
+      "prompt": "我又来了，继续学这个项目",
+      "assertions": [
+        "无活跃会话但存在历史资产时，展示 Atlas location 投影或最近学习资产",
+        "询问学习者哪些还记得、哪些已经模糊，而不是当作白纸从零开始",
+        "起始层级基于学习者仍能自信解释的最高层级下调一层",
+        "新目标通过 Atlas 连接历史资产而不是孤立创建"
+      ]
+    },
+    {
+      "name": "architect-level-teaching",
+      "prompt": "我想整体了解这个项目的架构，作为决策者把握重要组件和设计",
+      "assertions": [
+        "第一轮呈现组件清单、职责划分和关键设计决定，而不是传输机制或接口级细节",
+        "教学停留在人的认知区（边界、职责链、契约与设计理由），不默认降到函数或线上协议级",
+        "更深的实现细节被标记为 deferred 且 futureTopic 注明 ai-delegable，而不是继续下钻",
+        "用 I/O 边界定位职责与契约（哪个世界拥有它、契约是什么），而不是追踪具体调用序列",
+        "checkpoint 检验架构级推理（如换掉某个组件会波及哪里），而不是背诵调用顺序"
+      ]
+    },
+    {
+      "name": "agent-led-progression",
+      "prompt": "我不了解这个项目，带我从整体架构学一遍",
+      "assertions": [
+        "开场宣布主线学习路径（经过哪些区域、什么顺序）",
+        "每轮结束由 agent 提出唯一的下一步并给出与主线相关的理由",
+        "不向首次接触学习者抛出开放式子层菜单",
+        "学习者可以否决、改道或停止，但路径主导权在 agent",
+        "开放菜单只用于专家式具体问题或真实预算决策"
+      ]
+    },
+    {
+      "name": "diagram-language-and-granularity",
+      "prompt": "给我看看这个项目的整体架构图",
+      "assertions": [
+        "首轮图用学习者语言的功能名作主标签（如「记事本（会话真相）」），真实包名/符号名只作括号注释",
+        "首轮图不超过 5 个粗粒度框，每框一句话职责，不出现线上协议或子包级细节",
+        "图随轮次下降逐步精细化，而不是一开始就画精确全图",
+        "一张图只表达一种关系（谁调用谁/什么流向哪），不塞满所有边",
+        "提供功能名与真实名的对照表辅助导航，但不要求学习者背下",
+        "箭头标注传递内容（关系动词 + 载荷：什么以什么形式流过），不画裸箭头"
+      ]
+    },
+    {
+      "name": "metaphor-to-name-handoff",
+      "prompt": "带着我继续深入这个项目（已学过几轮，用比喻教过我）",
+      "assertions": [
+        "比喻标签首次出现即内联真实名锚点（如「岗位说明书（Agent 接口）」），不出现无锚点的纯比喻",
+        "随轮次推进真实名逐步成为主标签，比喻退为提示",
+        "毕业级 checkpoint 用真实名提问，学习者答比喻时需补真实名才算通过",
+        "每轮收尾回访功能名↔真实名对照表，让学习者看着真实名累积"
+      ]
+    },
+    {
+      "name": "session-close-privacy",
+      "prompt": "今天学到这里，我先走了",
+      "assertions": [
+        "学习结束时调用 finish_learning_session 关闭自动捕获（completed 或 paused）",
+        "不让会话跨天保持 active 状态",
+        "用户下次回来时提示 resume-learning 而不是静默继续捕获",
+        "未恢复会话前不记录与学习无关的对话"
+      ]
+    },
+    {
+      "name": "resume-agent-led",
+      "prompt": "继续昨天的学习",
+      "assertions": [
+        "调用 resume_learning_context 并展示主线进度（已走站点/剩余站点）",
+        "由 agent 从上一轮 next_actions 提出唯一下一站并给出理由",
+        "不向首次接触学习者抛出 2-3 个路径菜单",
+        "恢复前检查 freshness_report，不凭空声称新鲜"
+      ]
+    }
+  ]
+}

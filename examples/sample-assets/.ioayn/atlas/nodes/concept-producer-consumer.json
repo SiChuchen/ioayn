@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.1",
+  "id": "concept-producer-consumer",
+  "type": "concept",
+  "label": "producer-consumer",
+  "description": "Concept connected through IOAYN learning assets: producer-consumer",
+  "ref_type": "concept",
+  "ref_id": "concept-producer-consumer",
+  "status": {
+    "model": "modeled",
+    "connection": "connected",
+    "freshness": "current",
+    "unknowns": "clear"
+  },
+  "tags": [
+    "concept"
+  ],
+  "evidence_refs": [],
+  "unknown_refs": [],
+  "revision": {
+    "branch": "master",
+    "commit": "a8d4d8f2fb0b7a509855b510d5c9af5599391794",
+    "dirty": true
+  },
+  "created_at": "2026-07-21T11:09:42.717Z",
+  "updated_at": "2026-07-21T11:09:42.717Z"
+}

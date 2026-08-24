@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,119}$"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "system_area",
+        "learning_slice",
+        "learning_asset",
+        "concept",
+        "code_entity",
+        "data_object",
+        "state",
+        "boundary",
+        "external_system"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 180
+    },
+    "description": {
+      "default": "",
+      "type": "string"
+    },
+    "ref_type": {
+      "type": "string",
+      "enum": [
+        "goal",
+        "slice",
+        "learning_asset",
+        "concept",
+        "code_entity",
+        "system_area",
+        "none"
+      ]
+    },
+    "ref_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,119}$"
+    },
+    "system_area": {
+      "type": "string"
+    },
+    "status": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "type": "string",
+          "enum": [
+            "observed",
+            "modeled",
+            "verified",
+            "revised"
+          ]
+        },
+        "connection": {
+          "type": "string",
+          "enum": [
+            "isolated",
+            "connected"
+          ]
+        },
+        "freshness": {
+          "type": "string",
+          "enum": [
+            "current",
+            "stale",
+            "unknown"
+          ]
+        },
+        "unknowns": {
+          "type": "string",
+          "enum": [
+            "open",
+            "clear"
+          ]
+        }
+      },
+      "required": [
+        "model",
+        "connection",
+        "freshness",
+        "unknowns"
+      ],
+      "additionalProperties": false
+    },
+    "tags": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evidence_refs": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9_-]{0,119}$"
+      }
+    },
+    "unknown_refs": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9_-]{0,119}$"
+      }
+    },
+    "revision": {
+      "type": "object",
+      "properties": {
+        "branch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "commit": {
+          "type": "string",
+          "minLength": 7
+        },
+        "dirty": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "branch",
+        "commit",
+        "dirty"
+      ],
+      "additionalProperties": false
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "type",
+    "label",
+    "description",
+    "ref_type",
+    "status",
+    "tags",
+    "evidence_refs",
+    "unknown_refs",
+    "revision",
+    "created_at",
+    "updated_at"
+  ],
+  "additionalProperties": false,
+  "$id": "urn:ioayn:schema:atlas-node:1.1",
+  "title": "AtlasNode"
+}

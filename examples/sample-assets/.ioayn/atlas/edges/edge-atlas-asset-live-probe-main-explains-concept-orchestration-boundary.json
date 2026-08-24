@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.1",
+  "id": "edge-atlas-asset-live-probe-main-explains-concept-orchestration-boundary",
+  "from": "atlas-asset-live-probe-main",
+  "to": "concept-orchestration-boundary",
+  "relation": "EXPLAINS",
+  "label": "explains",
+  "confidence": "high",
+  "evidence_refs": [],
+  "created_at": "2026-07-21T11:09:42.720Z",
+  "updated_at": "2026-07-21T11:09:42.720Z"
+}

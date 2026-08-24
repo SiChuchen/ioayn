@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.1",
+  "project_id": "ioayn-v11-sample-project-ac2871b103",
+  "project_root": ".",
+  "created_at": "2026-07-21T11:09:42.256Z",
+  "updated_at": "2026-07-21T11:09:42.739Z",
+  "current_goal_id": "understand-live-probe",
+  "current_session_id": null,
+  "initialized_revision": {
+    "branch": "master",
+    "commit": "a8d4d8f2fb0b7a509855b510d5c9af5599391794",
+    "dirty": true,
+    "is_git_repository": true,
+    "captured_at": "2026-07-21T11:09:42.254Z"
+  },
+  "capabilities": {
+    "persistent_memory": true,
+    "automatic_journal_capture": true,
+    "cognitive_atlas": true,
+    "recoverable_round_commit": true
+  }
+}

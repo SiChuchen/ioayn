@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.1",
+  "id": "edge-atlas-asset-live-probe-main-explains-entity-live-probe",
+  "from": "atlas-asset-live-probe-main",
+  "to": "entity-live-probe",
+  "relation": "EXPLAINS",
+  "label": "explains role of",
+  "confidence": "high",
+  "evidence_refs": [
+    "round-live-probe-1-evidence-1"
+  ],
+  "created_at": "2026-07-21T11:09:42.722Z",
+  "updated_at": "2026-07-21T11:09:42.722Z"
+}

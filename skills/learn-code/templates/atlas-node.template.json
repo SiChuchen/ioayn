@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.1",
+  "id": "atlas-asset-target-main-path",
+  "type": "learning_asset",
+  "label": "目标主输入输出路径",
+  "description": "说明输入如何经过当前系统区域形成输出。",
+  "ref_type": "learning_asset",
+  "ref_id": "asset-target-main-path",
+  "system_area": "system/target-area",
+  "status": {
+    "model": "modeled",
+    "connection": "isolated",
+    "freshness": "unknown",
+    "unknowns": "open"
+  },
+  "tags": [
+    "io-flow"
+  ],
+  "evidence_refs": [],
+  "unknown_refs": [],
+  "revision": {
+    "branch": "main",
+    "commit": "0000000",
+    "dirty": false
+  },
+  "created_at": "2026-01-01T00:00:00.000Z",
+  "updated_at": "2026-01-01T00:00:00.000Z"
+}

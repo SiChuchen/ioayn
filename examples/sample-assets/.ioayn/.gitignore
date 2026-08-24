@@ -1,0 +1,8 @@
+# IOAYN personal learning journal and runtime state
+journal/
+sessions/
+rounds/
+checkpoints/
+runtime/
+*.tmp-*
+*.bak-*

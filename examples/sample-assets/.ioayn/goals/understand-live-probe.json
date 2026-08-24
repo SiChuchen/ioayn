@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.1",
+  "id": "understand-live-probe",
+  "project_id": "ioayn-v11-sample-project-ac2871b103",
+  "title": "理解存活探测主路径",
+  "target": "理解目标输入如何被存活探测并形成布尔结果",
+  "questions": [
+    "谁提供目标输入？",
+    "哪个边界执行探测？",
+    "结果由谁消费？"
+  ],
+  "scope": {
+    "include": [
+      "probe.c normal path"
+    ],
+    "exclude": [
+      "network packet implementation"
+    ]
+  },
+  "entry_hypotheses": [],
+  "done_when": [
+    "能够复述 analyse 到 live_probe 的主路径"
+  ],
+  "mode": "guided",
+  "abstraction": {
+    "start_level": "L1",
+    "target_level": "L3",
+    "current_level": "L1"
+  },
+  "status": "active",
+  "revision": {
+    "branch": "master",
+    "commit": "a8d4d8f2fb0b7a509855b510d5c9af5599391794",
+    "dirty": true
+  },
+  "created_at": "2026-07-21T11:09:42.416Z",
+  "updated_at": "2026-07-21T11:09:42.416Z"
+}

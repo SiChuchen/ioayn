@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.1",
+  "id": "round-live-probe-1-unknown-1",
+  "goal_id": "understand-live-probe",
+  "slice_id": "slice-live-probe-main",
+  "round_id": "round-live-probe-1",
+  "description": "真实项目中的存活判断是否包含网络收发尚未验证。",
+  "classification": "deferred",
+  "why_it_matters": "样例只用于展示资产结构，真实实现需要另建 L4/L5 切片。",
+  "confidence": "low",
+  "resolution_plan": [
+    "在真实项目中追踪 sender/receiver runtime evidence"
+  ],
+  "future_topic": "network live probe implementation",
+  "status": "open",
+  "created_at": "2026-07-21T11:09:42.699Z",
+  "updated_at": "2026-07-21T11:09:42.699Z"
+}

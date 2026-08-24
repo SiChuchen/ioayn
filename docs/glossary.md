@@ -1,0 +1,35 @@
+# Glossary
+
+- **I/O**：广义输入输出，包括数据、事件、状态、错误和副作用。
+- **Observable Anchor**：当前学习目标可观察或具有语义意义的起点。
+- **Learning Goal**：一次有边界的学习任务，包含问题、范围、层级和完成标准。
+- **Learning Slice**：围绕一个问题建立的局部端到端认知链。
+- **Participant**：切片中的关键参与者。
+- **Contextual Role**：某个实体在当前切片中的 input → action → output/side effect 角色，而不是全局字典定义。
+- **Contract**：参与者的输入、输出、状态、副作用和失败语义。
+- **Abstraction Level**：L0–L5 学习层级，从产品场景到实现机制。
+- **Cognitive Budget**：一轮教学允许引入的新实体、文件、概念和可视节点预算。
+- **Claim**：关于代码或行为的明确陈述。
+- **FACT**：由源码、测试、运行、日志、网络、数据库、Git 或文档证据直接支持的 claim。
+- **INFERENCE**：基于事实做出的解释或归纳，必须列出 basis。
+- **UNKNOWN**：当前证据不足的内容。
+- **CONFLICT**：不同证据或模型之间尚未解决的冲突。
+- **Blocking Unknown**：不解决就无法回答当前问题的未知。
+- **Non-blocking Unknown**：重要但不阻塞当前主路径的未知。
+- **Deferred Unknown**：属于其他未来切片的未知。
+- **Evidence**：支持 claim 的可回溯材料，带 revision、confidence 和限制。
+- **Checkpoint**：验证学习者心智模型的问题或实践，必须带抽象层级。
+- **Learning Session**：一次连续的 IOAYN 学习会话。
+- **Conversation Turn**：Journal 中的一条用户、Agent、工具或系统记录。
+- **Learning Round**：围绕一个 active question 完成的一轮教学、回答、证据和资产提交。
+- **Learning Journal**：opt-in 保存的原始学习过程；不是已验证知识。
+- **Learning Asset**：从学习轮次中提炼的可复用、证据感知认知资产。
+- **Cognitive Atlas**：把学习资产放回项目结构并连接历史知识的认知地图，不是进度百分比或全仓库调用图。
+- **Atlas Projection**：围绕一个问题生成的有边界地图视图，如 location、connections、history、concept、gaps。
+- **Atlas Delta**：本轮新增或修订的节点、连接、位置和认知断点。
+- **Freshness**：学习资产与当前代码 revision 的一致程度。
+- **Round Commit**：通过 `commit_learning_round` 原子提交一轮的对话引用、证据、未知、checkpoint、资产和 Atlas 关系。
+- **Persistent Mode**：MCP 可用且资产可持久化、恢复的模式。
+- **Degraded Mode**：MCP 不可用；只能使用方法论，不能声称已保存。
+- **Vertical Slice**：贯穿边界的局部完整路径。
+- **Horizontal Synthesis**：从多个切片归纳共享模块、概念和系统架构。

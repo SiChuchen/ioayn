@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "ioayn": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/server/dist/index.js"
+      ],
+      "env": {
+        "IOAYN_PROJECT_DIR": "${CLAUDE_PROJECT_DIR}"
+      }
+    }
+  }
+}

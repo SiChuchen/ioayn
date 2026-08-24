@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.1",
+  "id": "round-live-probe-1-evidence-1",
+  "goal_id": "understand-live-probe",
+  "slice_id": "slice-live-probe-main",
+  "round_id": "round-live-probe-1",
+  "claim": "analyse() 调用 live_probe(target) 并直接返回结果。",
+  "claim_type": "fact",
+  "kind": "source",
+  "source": {
+    "path": "probe.c",
+    "symbol": "analyse",
+    "lines": "5-7"
+  },
+  "confidence": "high",
+  "basis_refs": [],
+  "limitations": [],
+  "revision": {
+    "branch": "master",
+    "commit": "a8d4d8f2fb0b7a509855b510d5c9af5599391794",
+    "dirty": true
+  },
+  "verified_at": "2026-07-21T11:09:42.697Z"
+}

@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.1",
+  "id": "edge-atlas-asset-live-probe-main-explains-concept-producer-consumer",
+  "from": "atlas-asset-live-probe-main",
+  "to": "concept-producer-consumer",
+  "relation": "EXPLAINS",
+  "label": "explains",
+  "confidence": "high",
+  "evidence_refs": [],
+  "created_at": "2026-07-21T11:09:42.718Z",
+  "updated_at": "2026-07-21T11:09:42.718Z"
+}

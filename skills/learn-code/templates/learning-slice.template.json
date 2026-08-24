@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.1",
+  "id": "target-main-path",
+  "goal_id": "understand-target-io",
+  "title": "目标的主输入输出路径",
+  "question": "输入如何到达最终消费者？",
+  "abstraction_level": "L2",
+  "stage": "flow_traced",
+  "observable_anchor": {
+    "kind": "test-or-entry",
+    "description": "当前问题可直接观察的入口",
+    "location": "path-or-command"
+  },
+  "boundary": {
+    "inside": [
+      "当前主路径"
+    ],
+    "outside": [
+      "本轮折叠的旁路"
+    ]
+  },
+  "participants": [
+    {
+      "id": "observable-input",
+      "name": "可观察输入",
+      "kind": "boundary",
+      "role": "向当前切片提供需要追踪的数据。",
+      "output": {
+        "consumer": "first-consumer",
+        "type": "InputType",
+        "meaning": "需要追踪的输入"
+      }
+    },
+    {
+      "id": "first-consumer",
+      "name": "首个消费者",
+      "kind": "module",
+      "role": "消费可观察输入、完成当前层的主要转换并产生下游结果。",
+      "input": {
+        "producer": "observable-input",
+        "type": "InputType",
+        "meaning": "入口输入"
+      },
+      "transformations": [
+        "执行当前层的主要转换"
+      ],
+      "output": {
+        "consumer": "downstream-consumer",
+        "type": "OutputType",
+        "meaning": "下游可消费结果"
+      }
+    }
+  ],
+  "flow": {
+    "nodes": [
+      "observable-input",
+      "first-consumer"
+    ],
+    "edges": [
+      {
+        "from": "observable-input",
+        "to": "first-consumer",
+        "relation": "produces",
+        "data": "InputType"
+      }
+    ]
+  },
+  "state_changes": [],
+  "side_effects": [],
+  "failure_paths": [],
+  "introduced_entities": [
+    {
+      "id": "first-consumer",
+      "name": "首个消费者",
+      "kind": "module",
+      "role": "消费入口输入并产生下游输出。",
+      "input": "InputType",
+      "action": "执行当前层转换",
+      "output": "OutputType",
+      "map": false
+    }
+  ],
+  "evidence_refs": [],
+  "unknown_refs": [],
+  "round_refs": [],
+  "checkpoint": {
+    "id": "checkpoint-target-main-path",
+    "level": "L2",
+    "difficulty": "current_level",
+    "question": "请预测哪个参与者负责第一次数据表示转换。",
+    "expected_elements": [
+      "指出具体参与者并解释依据"
+    ],
+    "assessment": "pending"
+  },
+  "revision": {
+    "branch": "main",
+    "commit": "0000000",
+    "dirty": false
+  },
+  "created_at": "2026-01-01T00:00:00.000Z",
+  "updated_at": "2026-01-01T00:00:00.000Z"
+}

@@ -1,0 +1,47 @@
+{
+  "name": "ioayn",
+  "version": "1.1.3",
+  "release": "Teacher Index & Full-Session Hardening",
+  "built_at": "2026-08-17T00:00:00Z",
+  "runtime": {
+    "node": "22.16.0",
+    "npm": "10.9.2"
+  },
+  "validation": {
+    "repository_checks": "passed",
+    "typescript_strict_typecheck": "passed",
+    "mcp_bundle_build": "passed",
+    "json_schema_generation": "passed",
+    "mcp_end_to_end_smoke_test": "passed",
+    "round_idempotency_test": "passed",
+    "session_resume_test": "passed",
+    "hook_capture_and_provenance_link_test": "passed",
+    "v1_0_to_v1_1_migration_test": "passed",
+    "goal_close_and_workspace_reset_test": "passed",
+    "preflight_knowledge_summary_test": "passed",
+    "compact_tool_response_test": "passed",
+    "compact_resume_response_test": "passed",
+    "atlas_node_description_cleanup_test": "passed",
+    "auto_shared_concept_edge_test": "passed",
+    "teacher_index_build_and_read_test": "passed",
+    "atlas_heal_backfill_test": "passed",
+    "journal_round_backfill_test": "passed",
+    "goal_level_advance_test": "passed",
+    "slice_completion_on_close_test": "passed",
+    "synthetic_sample_generation": "passed",
+    "claude_code_plugin_validate": {
+      "status": "passed",
+      "note": "Run locally with Claude Code CLI during the dsh field test"
+    },
+    "real_repository_full_toolchain_e2e": {
+      "status": "passed",
+      "note": "Full live learning session against DeepSeek Harness (dsh) with plugin, hooks, and MCP connected; session feedback drove this release"
+    },
+    "schema_and_fixture_validation": "passed",
+    "knowledge_only_commit_freshness_test": "passed",
+    "product_source_staleness_test": "passed",
+    "portable_clean_npm_ci": "passed",
+    "local_markdown_link_check": "passed",
+    "standalone_bundle_without_node_modules": "passed"
+  }
+}

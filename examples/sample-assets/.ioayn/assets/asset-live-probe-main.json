@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.1",
+  "id": "asset-live-probe-main",
+  "goal_id": "understand-live-probe",
+  "slice_id": "slice-live-probe-main",
+  "type": "flow_understanding",
+  "title": "存活探测主 I/O 路径",
+  "question": "目标字符串如何变成存活结果？",
+  "body_markdown": "上游调用方把目标字符串交给 `analyse()`。`analyse()` 在当前切片中只负责把判断委托给 `live_probe()`，后者消费目标并返回 `int` 存活结果。",
+  "source_turn_refs": [
+    "turn-user-1",
+    "turn-agent-1"
+  ],
+  "context": {
+    "system_area": "engine/live-probe",
+    "abstraction_level": "L2"
+  },
+  "input": {
+    "source": "caller",
+    "type": "const char *",
+    "meaning": "目标字符串"
+  },
+  "output": {
+    "consumer": "caller",
+    "type": "int",
+    "meaning": "存活判断结果"
+  },
+  "key_entities": [
+    {
+      "id": "analyse",
+      "name": "analyse()",
+      "kind": "function",
+      "role": "接收上游目标并把存活判断委托给 live_probe()。",
+      "input": "target string",
+      "action": "delegate probe",
+      "output": "int result",
+      "source": {
+        "path": "probe.c",
+        "symbol": "analyse"
+      },
+      "map": false
+    },
+    {
+      "id": "live-probe",
+      "name": "live_probe()",
+      "kind": "function",
+      "role": "消费目标字符串并产出当前样例中的存活布尔结果。",
+      "input": "target string",
+      "action": "check non-empty target",
+      "output": "int result",
+      "source": {
+        "path": "probe.c",
+        "symbol": "live_probe"
+      },
+      "map": true
+    }
+  ],
+  "concepts": [
+    "producer-consumer",
+    "orchestration-boundary"
+  ],
+  "claims": [
+    {
+      "id": "round-live-probe-1-claim-1",
+      "type": "fact",
+      "text": "analyse() 将相同 target 参数传给 live_probe()。",
+      "confidence": "high",
+      "evidence_refs": [
+        "round-live-probe-1-evidence-1"
+      ],
+      "basis_refs": [],
+      "limitations": []
+    },
+    {
+      "id": "round-live-probe-1-claim-2",
+      "type": "inference",
+      "text": "analyse() 在该切片中是编排边界，而不是判断实现所有者。",
+      "confidence": "medium",
+      "evidence_refs": [
+        "round-live-probe-1-evidence-1"
+      ],
+      "basis_refs": [
+        "round-live-probe-1-claim-1"
+      ],
+      "limitations": []
+    }
+  ],
+  "evidence_refs": [
+    "round-live-probe-1-evidence-1"
+  ],
+  "unknown_refs": [
+    "round-live-probe-1-unknown-1"
+  ],
+  "learned_from": {
+    "session_id": "session-live-probe",
+    "round_id": "round-live-probe-1"
+  },
+  "atlas_node_id": "atlas-asset-live-probe-main",
+  "status": "verified",
+  "revision": {
+    "branch": "master",
+    "commit": "a8d4d8f2fb0b7a509855b510d5c9af5599391794",
+    "dirty": true
+  },
+  "created_at": "2026-07-21T11:09:42.707Z",
+  "updated_at": "2026-07-21T11:09:42.707Z"
+}

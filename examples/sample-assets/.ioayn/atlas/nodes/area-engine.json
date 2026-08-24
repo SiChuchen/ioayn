@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.1",
+  "id": "area-engine",
+  "type": "system_area",
+  "label": "engine",
+  "description": "System area: engine",
+  "ref_type": "system_area",
+  "ref_id": "area-engine",
+  "system_area": "engine",
+  "status": {
+    "model": "modeled",
+    "connection": "isolated",
+    "freshness": "current",
+    "unknowns": "clear"
+  },
+  "tags": [
+    "system-area"
+  ],
+  "evidence_refs": [],
+  "unknown_refs": [],
+  "revision": {
+    "branch": "master",
+    "commit": "a8d4d8f2fb0b7a509855b510d5c9af5599391794",
+    "dirty": true
+  },
+  "created_at": "2026-07-21T11:09:42.709Z",
+  "updated_at": "2026-07-21T11:09:42.709Z"
+}

@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.1",
+  "id": "edge-area-engine-live-probe-part-of-area-engine",
+  "from": "area-engine-live-probe",
+  "to": "area-engine",
+  "relation": "PART_OF",
+  "label": "belongs to",
+  "confidence": "high",
+  "evidence_refs": [],
+  "created_at": "2026-07-21T11:09:42.712Z",
+  "updated_at": "2026-07-21T11:09:42.712Z"
+}
