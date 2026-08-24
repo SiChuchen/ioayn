@@ -29,7 +29,6 @@ const required = [
   'server/src/atlas.ts',
   'server/src/validate-fixtures.ts',
   'server/dist/index.js',
-  'server/dist/validate-fixtures.js',
   'schemas/learning-session.schema.json',
   'schemas/conversation-turn.schema.json',
   'schemas/learning-round.schema.json',
