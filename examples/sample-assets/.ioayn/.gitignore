@@ -1,8 +1,4 @@
-# IOAYN personal learning journal and runtime state
-journal/
-sessions/
-rounds/
-checkpoints/
-runtime/
+# Synthetic sample fixture: all learning data is intentionally committed
+# so that CI validates the complete persistent learning model.
 *.tmp-*
 *.bak-*

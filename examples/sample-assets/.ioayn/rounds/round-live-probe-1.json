@@ -1,0 +1,120 @@
+{
+  "schema_version": "1.1",
+  "id": "round-live-probe-1",
+  "session_id": "session-live-probe",
+  "goal_id": "understand-live-probe",
+  "slice_id": "slice-live-probe-main",
+  "index": 1,
+  "abstraction_level": "L2",
+  "active_question": "目标字符串如何变成存活结果？",
+  "summary": "analyse 接收目标并调用 live_probe；live_probe 进行表示层面的存活判断并把 int 结果返回。",
+  "user_turn_refs": [
+    "turn-user-1"
+  ],
+  "agent_turn_refs": [
+    "turn-agent-1"
+  ],
+  "introduced_entities": [
+    {
+      "id": "analyse",
+      "name": "analyse()",
+      "kind": "function",
+      "role": "接收上游目标并把存活判断委托给 live_probe()。",
+      "input": "target string",
+      "action": "delegate probe",
+      "output": "int result",
+      "source": {
+        "path": "probe.c",
+        "symbol": "analyse"
+      },
+      "map": false
+    },
+    {
+      "id": "live-probe",
+      "name": "live_probe()",
+      "kind": "function",
+      "role": "消费目标字符串并产出当前样例中的存活布尔结果。",
+      "input": "target string",
+      "action": "check non-empty target",
+      "output": "int result",
+      "source": {
+        "path": "probe.c",
+        "symbol": "live_probe"
+      },
+      "map": true
+    }
+  ],
+  "claims": [
+    {
+      "id": "round-live-probe-1-claim-1",
+      "type": "fact",
+      "text": "analyse() 将相同 target 参数传给 live_probe()。",
+      "confidence": "high",
+      "evidence_refs": [
+        "round-live-probe-1-evidence-1"
+      ],
+      "basis_refs": [],
+      "limitations": []
+    },
+    {
+      "id": "round-live-probe-1-claim-2",
+      "type": "inference",
+      "text": "analyse() 在该切片中是编排边界，而不是判断实现所有者。",
+      "confidence": "medium",
+      "evidence_refs": [
+        "round-live-probe-1-evidence-1"
+      ],
+      "basis_refs": [
+        "round-live-probe-1-claim-1"
+      ],
+      "limitations": []
+    }
+  ],
+  "evidence_refs": [
+    "round-live-probe-1-evidence-1"
+  ],
+  "unknown_refs": [
+    "round-live-probe-1-unknown-1"
+  ],
+  "checkpoint": {
+    "id": "round-live-probe-1-checkpoint",
+    "level": "L2",
+    "difficulty": "current_level",
+    "question": "哪个函数拥有从目标输入到存活结果的主要判断职责？",
+    "expected_elements": [
+      "live_probe()",
+      "analyse() 只编排"
+    ],
+    "user_answer": "live_probe()，analyse() 负责委托。",
+    "assessment": "passed",
+    "feedback": "能够区分编排边界与具体处理者。"
+  },
+  "learning_asset_id": "asset-live-probe-main",
+  "atlas_node_refs": [
+    "atlas-slice-slice-live-probe-main",
+    "area-engine",
+    "area-engine-live-probe",
+    "atlas-asset-live-probe-main",
+    "concept-producer-consumer",
+    "concept-orchestration-boundary",
+    "entity-live-probe"
+  ],
+  "atlas_edge_refs": [
+    "edge-area-engine-live-probe-part-of-area-engine",
+    "edge-atlas-asset-live-probe-main-part_of-area-engine-live-probe",
+    "edge-atlas-asset-live-probe-main-learned_through-atlas-slice-slice-live-probe-main",
+    "edge-atlas-asset-live-probe-main-explains-concept-producer-consumer",
+    "edge-atlas-asset-live-probe-main-explains-concept-orchestration-boundary",
+    "edge-atlas-asset-live-probe-main-explains-entity-live-probe"
+  ],
+  "next_actions": [
+    "在真实项目中展开 live_probe 内部网络收发机制"
+  ],
+  "revision": {
+    "branch": "master",
+    "commit": "a8d4d8f2fb0b7a509855b510d5c9af5599391794",
+    "dirty": true
+  },
+  "created_at": "2026-07-21T11:09:42.724Z",
+  "updated_at": "2026-07-21T11:09:42.724Z"
+}

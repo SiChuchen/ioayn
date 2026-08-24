@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.1",
+  "id": "session-live-probe",
+  "project_id": "ioayn-v11-sample-project-ac2871b103",
+  "goal_id": "understand-live-probe",
+  "slice_id": "slice-live-probe-main",
+  "title": "存活探测学习",
+  "initial_prompt": "带我从整体输入输出理解存活探测",
+  "mode": "persistent",
+  "status": "completed",
+  "external_session_ids": [],
+  "capture": {
+    "enabled": true,
+    "journal_path": ".ioayn/journal/session-live-probe.jsonl"
+  },
+  "current_round_id": "round-live-probe-1",
+  "current_abstraction_level": "L2",
+  "revision": {
+    "branch": "master",
+    "commit": "a8d4d8f2fb0b7a509855b510d5c9af5599391794",
+    "dirty": true
+  },
+  "started_at": "2026-07-21T11:09:42.503Z",
+  "updated_at": "2026-07-21T11:09:42.734Z",
+  "ended_at": "2026-07-21T11:09:42.734Z"
+}
