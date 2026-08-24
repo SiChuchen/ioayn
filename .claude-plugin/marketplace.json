@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
-  "name": "ioayn-marketplace",
+  "name": "ioayn",
   "description": "IOAYN — Input/Output Is All You Need: persistent, guided codebase learning with a bounded Cognitive Atlas.",
   "owner": {
     "name": "SiChuchen",

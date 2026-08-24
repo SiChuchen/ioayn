@@ -56,20 +56,20 @@ v1.1.0 将 IOAYN 从“方法论 + 基础持久化”升级为**持续学习记�
 
 ```bash
 claude plugin marketplace add SiChuchen/ioayn
-claude plugin install ioayn@ioayn-marketplace
+claude plugin install ioayn@ioayn
 ```
 
-更新：`claude plugin update ioayn@ioayn-marketplace`。
+更新：`claude plugin update ioayn@ioayn`。
 
 ### 方式二：本地开发安装
 
 ```bash
 git clone https://github.com/SiChuchen/ioayn && cd ioayn
 claude plugin marketplace add "$(pwd)"
-claude plugin install ioayn@ioayn-marketplace
+claude plugin install ioayn@ioayn
 ```
 
-本仓库迭代后执行 `claude plugin update ioayn@ioayn-marketplace` 生效。
+本仓库迭代后执行 `claude plugin update ioayn@ioayn` 生效。
 
 ### 方式三：临时加载（不安装）
 
@@ -228,14 +228,14 @@ Atlas 不是完成百分比，也不是全仓库调用图。它回答：
 ## 开发与验证
 
 ```bash
-git clone <本仓库> && cd ioayn
+git clone https://github.com/SiChuchen/ioayn && cd ioayn
 npm run setup
 npm run verify
 ```
 
 `verify` 依次执行：仓库一致性检查 → TypeScript strict 检查 → MCP 构建 → JSON Schema 生成 → 端到端 smoke 测试（含教师索引、紧凑响应、Atlas 自愈、journal 回填等断言）→ 再次仓库检查。CI 在每次 push/PR 时自动运行同一套命令。
 
-改 `SKILL.md` 可在当前会话热加载；改 Hooks、Agents 或 MCP 后执行 `claude plugin update ioayn@ioayn-marketplace` 并重启会话。
+改 `SKILL.md` 可在当前会话热加载；改 Hooks、Agents 或 MCP 后执行 `claude plugin update ioayn@ioayn` 并重启会话。
 
 `test:smoke` 包含：
 
@@ -246,12 +246,6 @@ npm run verify
 - v1.0 → v1.1 迁移；
 - workspace 引用校验；
 - Zod 对模板与完整 synthetic sample 的 Schema/引用校验。
-
-修改 `SKILL.md` 可以在当前会话热加载；修改 Hooks、Agents 或 MCP 后应执行：
-
-```text
-/reload-plugins
-```
 
 ## 推荐文档阅读顺序
 
