@@ -1,7 +1,8 @@
-# IOAYN Framework v1.1.0
+# IOAYN — Input/Output Is All You Need
 
-> **Input/Output Is All You Need**  
-> 从可观察输入与输出出发，沿真实信息流逐层理解复杂代码库，并把每次学习沉淀为可复用的认知资产。
+> **English overview** — IOAYN is a Claude Code plugin + local MCP server for **guided, persistent codebase learning**. Instead of starting from `main`, directory trees, or whole-repo summaries, each learning session is built around one bounded question: observable inputs and outputs, producers and consumers, boundaries and contracts. The agent is the teacher (learner-state calibration, agent-led progression, checkpoints); the learner is the decision-maker (architect persona: human cognitive zone L1–L3, deeper detail delegated to AI on demand). Every round is persisted as reusable knowledge assets, and a bounded **Cognitive Atlas** links concepts across sessions. A teacher-side project index makes anchor location an O(1) lookup. [Install](#快速使用) · [Docs](docs/) · MIT.
+
+> **中文** — 从可观察输入与输出出发，沿真实信息流逐层理解复杂代码库，并把每次学习沉淀为可复用的认知资产。
 
 IOAYN 是一套面向 AI Coding Agent 的代码学习方法论、Claude Code 插件和本地 MCP 框架。它不要求用户从 `main`、目录树或全仓库图开始，也不把“生成更多文档”当作理解代码。
 
@@ -51,24 +52,31 @@ v1.1.0 将 IOAYN 从“方法论 + 基础持久化”升级为**持续学习记�
 
 仓库自带已构建的 `server/dist/index.js`，普通使用无需安装 npm 依赖或构建。
 
-### 方式一：本地 marketplace 安装（推荐，可随开发更新）
+### 方式一：从 GitHub 市场安装（公开，推荐）
 
 ```bash
-git clone <本仓库> && cd ioayn
-claude plugin marketplace add "$(pwd)"
-claude plugin install ioayn@ioayn-local
+claude plugin marketplace add SiChuchen/ioayn
+claude plugin install ioayn@ioayn-marketplace
 ```
 
-之后在本仓库迭代开发时，执行 `claude plugin update ioayn@ioayn-local` 即可生效。
+更新：`claude plugin update ioayn@ioayn-marketplace`。
 
-### 方式二：临时加载（不安装）
+### 方式二：本地开发安装
+
+```bash
+git clone https://github.com/SiChuchen/ioayn && cd ioayn
+claude plugin marketplace add "$(pwd)"
+claude plugin install ioayn@ioayn-marketplace
+```
+
+本仓库迭代后执行 `claude plugin update ioayn@ioayn-marketplace` 生效。
+
+### 方式三：临时加载（不安装）
 
 ```bash
 cd /path/to/target-project
 claude --plugin-dir /path/to/ioayn
 ```
-
-Windows PowerShell 用户把路径换成 Windows 形式即可（如 `claude --plugin-dir D:\tools\ioayn`）。
 
 进入 Claude Code 后检查：
 
@@ -227,7 +235,7 @@ npm run verify
 
 `verify` 依次执行：仓库一致性检查 → TypeScript strict 检查 → MCP 构建 → JSON Schema 生成 → 端到端 smoke 测试（含教师索引、紧凑响应、Atlas 自愈、journal 回填等断言）→ 再次仓库检查。CI 在每次 push/PR 时自动运行同一套命令。
 
-改 `SKILL.md` 可在当前会话热加载；改 Hooks、Agents 或 MCP 后执行 `claude plugin update ioayn@ioayn-local` 并重启会话。
+改 `SKILL.md` 可在当前会话热加载；改 Hooks、Agents 或 MCP 后执行 `claude plugin update ioayn@ioayn-marketplace` 并重启会话。
 
 `test:smoke` 包含：
 
