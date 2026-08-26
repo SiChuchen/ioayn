@@ -18,8 +18,8 @@ Use the IOAYN tools registered in this session and the IOAYN subagents. Keep rep
 
 1. Attempt `preflight_learning` before analysis.
 2. Display the operating mode:
-   - `PERSISTENT` when MCP preflight succeeds;
-   - `DEGRADED` when the MCP is unavailable. In degraded mode, explicitly state that journal, Atlas, freshness, and resumable progress will not be saved.
+   - `PERSISTENT` when the `preflight_learning` tool succeeds;
+   - `DEGRADED` when the IOAYN tools are unavailable. In degraded mode, explicitly state that journal, Atlas, freshness, and resumable progress will not be saved.
 3. If migration is required, call `migrate_workspace` before writing v1.1 assets.
 4. Initialize the workspace, create or resume the goal, and start a persistent learning session before the first teaching step.
 5. Assess the learner state before choosing a level, then confirm the starting and target abstraction levels. Do not assume that more detail is better, and never infer familiarity from silence.
