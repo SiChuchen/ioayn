@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.1",
+  "id": "edge-target-part-of-area",
+  "from": "atlas-asset-target-main-path",
+  "to": "atlas-area-target-area",
+  "relation": "PART_OF",
+  "label": "位于目标系统区域",
+  "confidence": "high",
+  "evidence_refs": [],
+  "created_at": "2026-01-01T00:00:00.000Z",
+  "updated_at": "2026-01-01T00:00:00.000Z"
+}

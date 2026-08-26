@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.1",
+  "id": "round-target-1",
+  "session_id": "session-target",
+  "goal_id": "understand-target-io",
+  "slice_id": "target-main-path",
+  "index": 1,
+  "abstraction_level": "L2",
+  "active_question": "输入如何到达第一个关键消费者？",
+  "summary": "本轮建立入口输入到首个消费者的边界模型。",
+  "user_turn_refs": [],
+  "agent_turn_refs": [],
+  "introduced_entities": [
+    {
+      "id": "first-consumer",
+      "name": "首个消费者",
+      "kind": "module",
+      "role": "消费入口输入并产出下游表示。",
+      "input": "InputType",
+      "action": "验证并转换",
+      "output": "OutputType",
+      "map": false
+    }
+  ],
+  "claims": [
+    {
+      "id": "round-target-1-claim-1",
+      "type": "inference",
+      "text": "首个消费者可能是当前切片中的表示转换边界。",
+      "confidence": "medium",
+      "evidence_refs": [],
+      "basis_refs": [],
+      "limitations": [
+        "尚未通过运行证据验证"
+      ]
+    }
+  ],
+  "evidence_refs": [],
+  "unknown_refs": [],
+  "checkpoint": {
+    "id": "round-target-1-checkpoint",
+    "level": "L2",
+    "difficulty": "current_level",
+    "question": "哪个节点拥有第一次表示转换？",
+    "expected_elements": [
+      "节点名称",
+      "输入输出依据"
+    ],
+    "assessment": "pending"
+  },
+  "atlas_node_refs": [],
+  "atlas_edge_refs": [],
+  "next_actions": [
+    "验证首个消费者的真实输入和输出"
+  ],
+  "revision": {
+    "branch": "main",
+    "commit": "0000000",
+    "dirty": false
+  },
+  "created_at": "2026-01-01T00:00:00.000Z",
+  "updated_at": "2026-01-01T00:00:00.000Z"
+}

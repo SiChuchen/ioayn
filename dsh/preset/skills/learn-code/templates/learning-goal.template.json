@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.1",
+  "id": "understand-target-io",
+  "project_id": "target-project",
+  "title": "理解目标输入输出路径",
+  "target": "理解一个可观察输入如何经过当前范围并形成输出",
+  "questions": [
+    "输入由谁产生？",
+    "哪些边界会转换或消费这个输入？",
+    "最终输出交给谁并产生什么副作用？"
+  ],
+  "scope": {
+    "include": [
+      "当前问题的主生产者到消费者路径"
+    ],
+    "exclude": [
+      "与当前主路径无关的监控、指标和旁路"
+    ]
+  },
+  "entry_hypotheses": [],
+  "done_when": [
+    "能够复述主输入输出链",
+    "能够说明关键实体的上下文角色",
+    "能够区分已验证结论与未解决未知"
+  ],
+  "mode": "guided",
+  "abstraction": {
+    "start_level": "L1",
+    "target_level": "L3",
+    "current_level": "L1"
+  },
+  "status": "active",
+  "revision": {
+    "branch": "main",
+    "commit": "0000000",
+    "dirty": false
+  },
+  "created_at": "2026-01-01T00:00:00.000Z",
+  "updated_at": "2026-01-01T00:00:00.000Z"
+}
