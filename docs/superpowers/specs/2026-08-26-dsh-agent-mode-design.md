@@ -6,7 +6,7 @@
 
 ## 1. 目标
 
-把 IOAYN v1.1 学习协议带入 DeepSeek Harness（dsh）：用户在 dsh 模式选择器中选择"IOAYN 模式"后，得到一个以 IOAYN 方法论为行为核心的 agent——`/learn-code`、`/resume-learning`、`/view-atlas` 触发完整学习流程，18 个 MCP 状态工具以 dsh 原生工具形式提供，journal 由插件事件监听隐式捕获。
+把 IOAYN v1.1 学习协议带入 DeepSeek Harness（dsh）：用户在 dsh 模式选择器中选择"IOAYN 模式"后，得到一个以 IOAYN 方法论为行为核心的 agent——`/learn-code`、`/resume-learning`、`/view-atlas` 触发完整学习流程，27 个 MCP 状态工具以 dsh 原生工具形式提供，journal 由插件事件监听隐式捕获。
 
 非目标：
 
@@ -20,7 +20,7 @@
 | 决策 | 结论 | 理由 |
 |---|---|---|
 | 分发形式 | npm 包 `ioayn-dsh`（dsh bundle：插件 + 安装命令）+ `ioayn-dsh install` 拷贝 preset 模板到 `$DSH_HOME/.agent-presets/ioayn/` | dsh 的 `profile-boot.ts` 把 `agent-presets` 行的 `roots` 覆写为仅 shipped root（FACT，profile-boot.ts:159-167），user root 靠 `includeUserRoot` 默认 true 追加（FACT，agent-presets/src/index.ts）；第三方 preset 唯一官方入口是 user preset 目录 |
-| 工具暴露方式 | dsh **原生插件**（`defineTool` 注册 18 个工具），不走 MCP 桥 | 用户判断 + 共识：agent 模式应是 agent 行为本身而非"agent 调外部服务器"；原生工具获得干净工具名、目录集成、toolFilter 可用；同时进程内事件监听可拿到真实 assistant 消息 |
+| 工具暴露方式 | dsh **原生插件**（`defineTool` 注册 27 个工具），不走 MCP 桥 | 用户判断 + 共识：agent 模式应是 agent 行为本身而非"agent 调外部服务器"；原生工具获得干净工具名、目录集成、toolFilter 可用；同时进程内事件监听可拿到真实 assistant 消息 |
 | journal 捕获 | 同一插件监听 dsh 原生事件，隐式捕获 | 取代协议内自报（P1）与后续原生插件（P2）；保真度不低于 Claude Code hooks 路径 |
 | dsh hooks 桥 | 不使用 | 正式版 dsh 不分发 `dsh-hooks-claude-code`（FACT，本机 0.1.1-rc.2 实测）；其 Stop 载荷缺 `last_assistant_message`（FACT，源码）；且 StopFailure/PostCompact/SessionEnd 不支持 |
 | 单源策略 | 状态层逻辑只在 `server/src/core/` 一处，两个消费者各自 bundle | Zod 仍是数据模型与 MCP 路径校验的单源；dsh 工具的输入 DSL 与输出 schema 是新增同步面（§5），由 verify 的参数名对齐检查兜底 |
@@ -50,7 +50,7 @@ dsh preset（agent-plane 组合）：
 | IOAYN 侧 | dsh preset 行 |
 |---|---|
 | AGENTS.md 不变量 + 教学行为 | `@deepseek-ai/dsh-persona`：编码 agent 基底 + IOAYN v1.1 不变量摘要 + 技能入口提示 |
-| 18 个 MCP 工具 | 引用 `ioayn-dsh` 插件行（按包名，dsh optional-provider 官方模式；解析可行性验证见 §7） |
+| 27 个 MCP 工具 | 引用 `ioayn-dsh` 插件行（按包名，dsh optional-provider 官方模式；解析可行性验证见 §7） |
 | 3 个 skills | `@deepseek-ai/dsh-skill-filesystem`（`customSkillDirs` 指向 preset 自带 `skills/`，`baseUrl` 相对解析，官方 cordis preset 同款写法）+ `@deepseek-ai/dsh-tool-skill`；用户输入 `/learn-code` 等触发 |
 | 4 个 subagents | `@deepseek-ai/dsh-tool-subagent`（spawn、one-shot）；角色 persona 放 `skills/learn-code/references/agents/`，委派时作为 per-child persona 传入，`disallowedTools` 映射为 toolFilter deny |
 | journal 自动捕获 | 插件事件监听（见上） |
@@ -68,7 +68,7 @@ ioayn/
 │   ├── cordis.patch.yml    # v1 空层 []
 │   ├── src/
 │   │   ├── index.ts        # definePlugin：inject ['tools', …]，注册工具 + 事件监听
-│   │   ├── tools.ts        # 18 个 defineTool 薄壳
+│   │   ├── tools.ts        # 27 个 defineTool 薄壳
 │   │   └── journal.ts      # dsh 事件 → journal 捕获
 │   ├── preset/
 │   │   ├── preset.yml      # name: IOAYN 模式；description；order
@@ -87,8 +87,8 @@ npm 名 `ioayn-dsh` 已确认可用（FACT，registry 404）。
 ### 工具注册
 
 - 参考 `dsh-tool-goal` 的 `defineTool` + `inject: ['tools', …]` 模式（FACT，源码）；
-- **输入 schema**：dsh 不接受原始 JSON Schema——参数必须用其自有 `ParameterSchemaSpec` DSL（FACT，packages/core/tools/src/schema.ts:545-566，经受限 JSON Schema 子集校验）。因此 18 个工具的输入在 `tools.ts` 手写 DSL；Zod 仍是数据模型与 MCP 路径的校验单源，verify 做参数名级对齐检查防两侧漂移（不做关键字级转换器，v1 明确不建）；
-- **输出契约**：`output.schema` + `output.render` 为必填（FACT，schema.ts:489-497），18 个工具各配一份 JSON Schema 与文本渲染——这是本设计的明确工作量项，不是薄壳；
+- **输入 schema**：dsh 不接受原始 JSON Schema——参数必须用其自有 `ParameterSchemaSpec` DSL（FACT，packages/core/tools/src/schema.ts:545-566，经受限 JSON Schema 子集校验）。因此 27 个工具的输入在 `tools.ts` 手写 DSL；Zod 仍是数据模型与 MCP 路径的校验单源，verify 做参数名级对齐检查防两侧漂移（不做关键字级转换器，v1 明确不建）；
+- **输出契约**：`output.schema` + `output.render` 为必填（FACT，schema.ts:489-497），27 个工具各配一份 JSON Schema 与文本渲染——这是本设计的明确工作量项，不是薄壳；
 - 工具名保持原名（`commit_learning_round` 等），无 `mcp__` 前缀；
 - session cwd 用于 `.ioayn/` 定位（沿 findWorkspace 向上查找逻辑，core 工厂按 cwd 实例化）；
 - MCP stdout 协议约束在 dsh 路径天然不适用（进程内调用），日志走 `ctx.logger`。
@@ -153,3 +153,14 @@ npx ioayn-dsh install                        # 拷贝 preset 模板（agent.cord
 - `server/src/core/` 抽取（无逻辑变更）；
 - `scripts/verify-dsh.mjs` 并入 verify；
 - README/CHANGELOG/RELEASE_NOTES/BUILD_INFO 按仓库流程更新。
+
+## 11. 执行勘误（2026-08-26 实现与真机验收后回填）
+
+1. **工具数**：全文"18 个工具"均应为 **27**（早期统计错误；实现与 verify-dsh 均以 27 为准）。
+2. **PostCompact**：compaction 事件名未在 dsh 源码证实（compaction-basic 监听 session/event 是为 assistant/message）；v1 不捕获 compact_summary，原表"可监听"表述过度声称。
+3. **§8 mount 冒烟**：实际落地为 discovery/结构检查（verify-dsh 层 1-4）+ 真机 mount 门（Task 10 验收），未做进程内 cordis mount。
+4. **§7 包名解析（重要修正）**：dsh 的 preset 行裸包名从 **harnessBase**（harness 安装目录内部）解析（mount.ts PresetTree.import 的设计），profile node_modules 不参与——裸名 out-of-tree 永远解析失败（真机复现：web 无法新开会话）。**`bin.mjs install` 把安装副本的 ioayn-tools 行改写为插件入口绝对路径（mount.ts 显式支持）是标准机制而非 fallback**；"patch 层 disabled 锚行"方案未采用，删除。
+5. **§5 事件载荷修正**（实现时按已安装 SDK d.ts 校正）：`assistant/message` 的 data 是 `{turn, step, message, usage?}`，文本在 `data.message.content`；`user/message` 的 data 是扁平 UserMessage；source.kind ∈ `user|plugin|model|tool`（无 'human'），门控为排除 kind 存在且非 'user'；`agent/disposed` 需先过 delegationDepth>0 门控（子代理回收不关 marker）。
+6. **方向修正（用户决定）**：IOAYN 模式为**专职引导式学习 agent**——方法论进系统提示词，任何学习意图主动进入协议（非"编码优先、命令触发"）；纯编码任务建议切换通用模式。
+7. **子代理委派修正**：persona/toolFilter 是 dsh tool-subagent 的 **per-instance 插件配置**（模型面 schema 只有 description/prompt/run_in_background）——落地为 4 个角色专用工具实例（slice_explorer/learning_tutor/runtime_verifier/knowledge_curator，内联 persona + toolFilter deny）。
+8. **新增已知限制**：`start_learning_session` 的 initialPrompt turn 的 external id 为模型自编占位符（后续事件捕获均用真实 id）；安装副本的插件行指向安装时包路径，包目录移动后需重跑 `ioayn-dsh install`。

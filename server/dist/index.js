@@ -28985,7 +28985,7 @@ var StdioServerTransport = class {
 import { resolve as resolve3 } from "node:path";
 
 // src/core/constants.ts
-var VERSION = "1.1.3";
+var VERSION = "1.2.0";
 var SCHEMA_VERSION = "1.1";
 var ABSTRACTION_LEVELS = ["L0", "L1", "L2", "L3", "L4", "L5"];
 var CLAIM_TYPES = ["fact", "inference", "unknown", "conflict"];

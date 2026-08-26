@@ -140,6 +140,19 @@ Skill 首先尝试调用 `preflight_learning`：
 
 原始对话不会自动成为事实。每轮仍需通过 `commit_learning_round` 提炼为带可复用 Markdown 教学正文、来源 turn、证据、confidence 和 revision 的 `LearningAsset`。Hook 会把最终教学回复关联回对应 Round 与 Asset，便于从知识资产追溯原始交流。
 
+## DeepSeek Harness (dsh)
+
+IOAYN 现已作为 DeepSeek Harness（dsh）的原生插件交付（包 `ioayn-dsh`）：27 个学习工具以进程内原生工具形式注册，不走 MCP 桥。选择"IOAYN 模式"后，得到一个**专职引导式学习 agent**——任何学习意图（哪怕"我想了解这个项目"）都会主动进入有边界的学习协议，纯编码任务建议切换通用模式。journal 由 dsh 事件监听隐式捕获（marker 门控，opt-in），学习记忆与认知 Atlas 和 Claude Code 端同源同 schema。
+
+安装两步：
+
+```bash
+dsh plugin --profile <name> add ioayn-dsh
+npx ioayn-dsh install
+```
+
+详见 [`dsh/README.md`](dsh/README.md)（信任模型、已知限制与开发验证说明）。
+
 ## `.ioayn/` 目录
 
 ```text

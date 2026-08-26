@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.2.0 — DeepSeek Harness Native Agent Mode (2026-08-26)
+
+New deliverable alongside the Claude Code plugin: IOAYN as a dedicated guided-learning agent inside the DeepSeek Harness (dsh). No breaking changes — schemas, protocol, `.ioayn/` storage, and the Claude Code path are untouched.
+
+- **dsh native plugin (`ioayn-dsh`)**: all 27 IOAYN tools register in-process via `defineTool` (no MCP bridge), with hand-written `ParameterSchemaSpec` inputs and the required `output.schema`/`output.render` contracts; `verify` checks parameter-name alignment against the core Zod schemas to prevent dual-source drift.
+- **Event-driven journal capture**: the plugin listens to dsh native events (`user/message`, `assistant/message`, `agent/disposed`) with the same semantics as the Claude Code hooks path — marker gating, dedupe window, fingerprints, round/asset back-links; `start_learning_session` remains the explicit opt-in.
+- **Dedicated learning-agent persona**: the methodology lives in the system prompt; any learning intent (even "I want to understand this project") proactively enters the protocol — preflight, learner-state assessment, goal/session, bounded teaching rounds under the 5/3/3/8 cognitive budgets, `commit_learning_round`, Cognitive Atlas. Pure coding tasks are redirected to a general mode. The four subagent roles ship as dedicated per-instance tools (`slice_explorer`, `learning_tutor`, `runtime_verifier`, `knowledge_curator`) with inline personas and `toolFilter` deny lists.
+- **Preset installer**: `ioayn-dsh install` copies the agent preset to `$DSH_HOME/.agent-presets/ioayn/` and rewrites the installed copy's ioayn-tools row to the plugin entry's absolute path — the standard dsh mechanism (bare preset rows resolve from the harness base, not the profile's node_modules; confirmed on a real machine). Includes `status` and `uninstall`; `install --force` replaces.
+- **core factory refactor (behavior unchanged)**: `server/src/core/` now exposes `createCore(workspaceRoot)` and `findWorkspace`; the MCP server and the dsh bundle consume the same core, guarded by the existing test suite.
+- **`verify-dsh` release gate** added to `npm run verify`: typecheck, build, journal/bin tests, and five preset layers (structure, skill frontmatter, tool alignment, copy drift, install drill).
+
+Known limitations: compact_summary and StopFailure-equivalent events are not captured (no confirmed dsh equivalents; `agent/disposed` closes the marker, `finish_learning_session` is the fallback for long-lived hosts); the `start_learning_session` initial-prompt turn carries a model-generated placeholder external id (later turns use real ids); the installed preset row points at the package path captured at install time — moving the package requires rerunning `ioayn-dsh install`. Accepted the boundary: one active learning session per workspace (no concurrent Claude Code + dsh use).
+
 ## 1.1.3 — Teacher Index & Full-Session Hardening (2026-08-17)
 
 Every change comes from the second live learning goal (plugin development) run against dsh, including learner feedback raised mid-session.

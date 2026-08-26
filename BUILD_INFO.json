@@ -1,12 +1,16 @@
 {
   "name": "ioayn",
-  "version": "1.1.3",
-  "release": "Teacher Index & Full-Session Hardening",
-  "built_at": "2026-08-17T00:00:00Z",
+  "version": "1.2.0",
+  "release": "DeepSeek Harness Native Agent Mode",
+  "built_at": "2026-08-26T00:00:00Z",
   "runtime": {
     "node": "22.16.0",
     "npm": "10.9.2"
   },
+  "deliverables": [
+    "Claude Code plugin (skills, subagents, hooks, stdio MCP server)",
+    "ioayn-dsh bundle: dsh native plugin (27 in-process tools, event-driven journal capture), agent preset, and ioayn-dsh install/uninstall/status"
+  ],
   "validation": {
     "repository_checks": "passed",
     "typescript_strict_typecheck": "passed",
@@ -29,6 +33,13 @@
     "goal_level_advance_test": "passed",
     "slice_completion_on_close_test": "passed",
     "synthetic_sample_generation": "passed",
+    "dsh_typecheck_and_bundle_build": "passed",
+    "dsh_journal_and_bin_tests": "passed",
+    "dsh_preset_five_layer_release_gate": "passed",
+    "dsh_agent_mode_real_machine_acceptance": {
+      "status": "passed",
+      "note": "Full guided-learning session inside dsh with the ioayn-dsh native plugin, event-driven journal capture, and preset install (manual acceptance gate)"
+    },
     "claude_code_plugin_validate": {
       "status": "passed",
       "note": "Run locally with Claude Code CLI during the dsh field test"

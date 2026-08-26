@@ -1,4 +1,4 @@
-export const VERSION = "1.1.3";
+export const VERSION = "1.2.0";
 export const SCHEMA_VERSION = "1.1";
 
 export const ABSTRACTION_LEVELS = ["L0", "L1", "L2", "L3", "L4", "L5"] as const;

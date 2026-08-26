@@ -1,3 +1,27 @@
+# IOAYN v1.2.0 — dsh 原生学习 Agent 模式
+
+发布日期：2026-08-26
+
+v1.2.0 交付新形态：IOAYN 作为 DeepSeek Harness（dsh）内的**专职引导式学习 agent**。选择"IOAYN 模式"后，任何学习意图（哪怕"我想了解这个项目"）都会主动进入有边界的学习协议——preflight → 学习者状态评估 → goal/session → 逐轮教学（认知预算 5/3/3/8）→ `commit_learning_round` → 认知 Atlas；journal 由 dsh 事件监听隐式捕获（marker 门控，opt-in）。纯编码任务建议切换通用模式。
+
+安装两步：`dsh plugin --profile <name> add ioayn-dsh` + `npx ioayn-dsh install`（详见 `dsh/README.md`）。
+
+要点：
+
+1. **27 个工具原生注册**：不走 MCP 桥，进程内 `defineTool` 薄壳直调共享 core；输入用 dsh `ParameterSchemaSpec` DSL 手写，verify 做参数名对齐防双源漂移。
+2. **事件驱动 journal**：`user/message` / `assistant/message` / `agent/disposed` 对齐 Claude Code hooks 语义（marker 门控、5 秒 dedupe、fingerprint、round/asset 反向链接）。
+3. **preset 安装器**：拷贝 persona/skills/子代理工具/插件行到 `$DSH_HOME/.agent-presets/ioayn/`；安装副本的 ioayn-tools 行改写为插件入口**绝对路径**（dsh 从 harness 内部解析裸名，profile 依赖不参与——标准机制而非 fallback）。`status` / `uninstall` / `install --force` 齐备。
+4. **core 工厂化重构（行为不变）**：`createCore(workspaceRoot)` 按根实例化、`findWorkspace` 移入 core，MCP server 与 dsh bundle 同源消费，由现有测试守护。
+5. **verify-dsh 五层门**：typecheck、构建、journal/bin 测试、preset 结构/技能/工具对齐/拷贝漂移、安装演练，并入 `npm run verify`。
+
+破坏性变更：无——schema、协议、`.ioayn/` 存储与 Claude Code 路径行为完全不变。
+
+已知限制：compact_summary 与 StopFailure 类事件不捕获（dsh 无已证实等价事件；`agent/disposed` 自动关闭 marker，宿主长驻时以 `finish_learning_session` 兜底）；`start_learning_session` 初始 prompt 的 external id 为模型自编占位符（后续 turn 均为真实 id）；安装副本的插件行指向安装时包路径，包目录移动后需重跑 `ioayn-dsh install`；同一工作区不与 Claude Code 端并发使用（active marker 单数）。
+
+验证：typecheck / build / schemas / smoke / verify-dsh（含真机安装演练）全链通过；真机完成 dsh 内完整学习会话验收（Task 10 手动门）。
+
+---
+
 # IOAYN v1.1.3 — 教师索引与全流程加固
 
 发布日期：2026-08-17
