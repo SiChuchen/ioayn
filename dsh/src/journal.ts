@@ -41,25 +41,28 @@ function safeId(value: string): string {
   return normalized || `dsh-${createHash('sha256').update(value).digest('hex').slice(0, 16)}`
 }
 
-/** 与 capture-hook.mjs 相同的写入管线：marker 门控 → dedupe → journal 追加。（round/asset 反向链接本版略——capture-hook 的反向链接依赖 round 学习资产结构，dsh v1 先记录 related_* 空数组，结构字段保留。） */
+const appendUnique = (list: unknown, value: string): string[] => [...new Set([...(Array.isArray(list) ? list : []), value])]
+
+/** 与 capture-hook.mjs 相同的写入管线：marker 门控 → dedupe → journal 追加 → session/round/asset 回写（回写失败静默降级，journal 优先）。 */
 export function captureEvent(input: {
   cwd: string; actor: 'user' | 'agent'; kind: 'prompt' | 'teaching'
   content: string; externalSessionId?: string
 }): 'captured' | 'no-workspace' | 'inactive' | 'empty' | 'duplicate' {
-  if (!input.content) return 'empty'
   const workspace = findWorkspace(input.cwd)
   if (!workspace) return 'no-workspace'
   const markerPath = join(workspace, 'runtime', 'active-session.json')
   const marker = readJson(markerPath)
   if (!marker?.active || !marker.learning_session_id) return 'inactive'
+  if (!input.content) return 'empty'
   const sessionId = String(marker.learning_session_id)
   const sessionPath = join(workspace, 'sessions', `${sessionId}.json`)
   const session = readJson(sessionPath)
   const activeRoundId = session?.current_round_id ? String(session.current_round_id) : undefined
+  let round: any = null
   let relatedEntities: string[] = []
   let relatedAssets: string[] = []
   if (activeRoundId) {
-    const round = readJson(join(workspace, 'rounds', `${activeRoundId}.json`))
+    round = readJson(join(workspace, 'rounds', `${activeRoundId}.json`))
     if (round) {
       relatedEntities = Array.isArray(round.introduced_entities) ? round.introduced_entities.map((e: { id: string }) => e.id).filter(Boolean) : []
       if (round.learning_asset_id) relatedAssets = [String(round.learning_asset_id)]
@@ -85,6 +88,39 @@ export function captureEvent(input: {
   }
   mkdirSync(dirname(journalPath), { recursive: true })
   appendFileSync(journalPath, `${JSON.stringify(turn)}\n`, 'utf8')
+
+  // 以下回写与 capture-hook.mjs 对齐：journal 已落盘，回写失败只静默降级（journal capture remains the priority）。
+  if (input.externalSessionId && session) {
+    try {
+      const ids: Set<string> = new Set(Array.isArray(session.external_session_ids) ? session.external_session_ids : [])
+      ids.add(input.externalSessionId)
+      session.external_session_ids = [...ids]
+      session.updated_at = createdAt
+      atomicWrite(sessionPath, session)
+    } catch { /* journal capture remains the priority */ }
+  }
+  if (round && activeRoundId) {
+    try {
+      const roundPath = join(workspace, 'rounds', `${activeRoundId}.json`)
+      if (input.actor === 'user') round.user_turn_refs = appendUnique(round.user_turn_refs, turn.id)
+      if (input.actor === 'agent') round.agent_turn_refs = appendUnique(round.agent_turn_refs, turn.id)
+      round.updated_at = createdAt
+      atomicWrite(roundPath, round)
+    } catch { /* journal capture remains the priority */ }
+  }
+  if (round?.learning_asset_id) {
+    try {
+      const assetPath = join(workspace, 'assets', `${round.learning_asset_id}.json`)
+      if (existsSync(assetPath)) {
+        const asset = readJson(assetPath)
+        if (asset) {
+          asset.source_turn_refs = appendUnique(asset.source_turn_refs, turn.id)
+          asset.updated_at = createdAt
+          atomicWrite(assetPath, asset)
+        }
+      }
+    } catch { /* journal capture remains the priority */ }
+  }
   return 'captured'
 }
 
