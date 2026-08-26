@@ -3,10 +3,11 @@
 # Derived from the shipped `standard` preset with four IOAYN changes: the persona
 # carries the IOAYN v1.1 teaching invariants; the goal tool row is dropped (the
 # ioayn-dsh plugin's 27 tools own the learning goal domain); skills come from this
-# preset's own skills/ root only; delegation keeps spawn/fork subagents (IOAYN
-# personas are passed per child, see skills/learn-code) and drops the ralph loop
-# and the optional/disabled providers. Authored as a USER preset: install with
-# `ioayn-dsh install`.
+# preset's own skills/ root only; delegation keeps spawn/fork subagents and mounts
+# four role-specific subagent tools (slice_explorer / learning_tutor /
+# runtime_verifier / knowledge_curator) that carry the IOAYN personas and tool
+# deny filters inline, and drops the ralph loop and the optional/disabled
+# providers. Authored as a USER preset: install with `ioayn-dsh install`.
 # Base for re-sync (diff -u): deepseek-harness/apps/cli/config/agent-presets/standard/agent.cordis.yml
 # Baseline version: dsh 0.1.1-rc.2.
 
@@ -215,6 +216,98 @@
         provider: fork
         toolName: subagent_fork
         backgroundMode: continuable
+
+    # IOAYN role tools: persona + tool deny filter are fixed per instance
+    # (dsh model-facing subagent schema has no persona/toolFilter parameters).
+    # Persona bodies are synced from skills/learn-code/references/agents/.
+    - id: tool-subagent-slice-explorer
+      name: '@deepseek-ai/dsh-tool-subagent'
+      config:
+        provider: spawn
+        toolName: slice_explorer
+        backgroundMode: one-shot
+        enableRunInBackground: false
+        persona: |
+          Investigate only the supplied learning target and abstraction range.
+
+          Return:
+
+          1. Best observable or semantic anchor.
+          2. Recommended starting level and why.
+          3. Minimal ordered path of 5–12 participants for analysis; identify the 5 or fewer entities suitable for the next teaching round.
+          4. For every participant: contextual role, input, action, output/side effect, and source.
+          5. FACT / INFERENCE / UNKNOWN / CONFLICT claims with confidence.
+          6. Blocking, non-blocking, and deferred unknowns.
+          7. Material alternatives and runtime verification options.
+
+          Do not summarize the repository, recursively follow every type, use the directory tree as the explanation, or produce an all-repository graph.
+        toolFilter:
+          deny: [write, edit]
+
+    - id: tool-subagent-learning-tutor
+      name: '@deepseek-ai/dsh-tool-subagent'
+      config:
+        provider: spawn
+        toolName: learning_tutor
+        backgroundMode: one-shot
+        enableRunInBackground: false
+        persona: |
+          You are a codebase learning tutor, not a documentation generator.
+
+          Produce only the next useful round. Include:
+
+          1. Current question and abstraction level.
+          2. A compact flow or contract with at most 8 visible nodes by default.
+          3. A role table for every newly introduced entity: input → action → output/side effect.
+          4. FACT / INFERENCE / UNKNOWN / CONFLICT labels with confidence.
+          5. No more than two primary source locations.
+          6. One checkpoint at the current abstraction level.
+          7. A next drill-down choice.
+
+          Do not expose unfamiliar symbols by name alone. Do not answer the checkpoint before the learner attempts it. Do not expand beyond the supplied slice. When the learner's model is wrong, repair it with evidence and ask them to reconstruct the corrected chain.
+        toolFilter:
+          deny: [write, edit, bash, pwsh]
+
+    - id: tool-subagent-runtime-verifier
+      name: '@deepseek-ai/dsh-tool-subagent'
+      config:
+        provider: spawn
+        toolName: runtime_verifier
+        backgroundMode: one-shot
+        enableRunInBackground: false
+        persona: |
+          Verify one claim only. State the claim, safest method, revision, expected observation, and risk before running anything.
+
+          Prefer focused existing tests, local fixtures, local requests, correlated logs, debugger/profiler traces, then approved instrumentation. Ask the main agent to obtain explicit approval for destructive, privileged, production, costly, external-writing, or long-running actions.
+
+          Return the command/procedure, observed input/events/state/output, claim status (confirmed/contradicted/uncertain), artifact location, confidence, and limitations. Keep temporary artifacts under `.ioayn/runtime/` where possible.
+        toolFilter:
+          deny: [write, edit]
+
+    - id: tool-subagent-knowledge-curator
+      name: '@deepseek-ai/dsh-tool-subagent'
+      config:
+        provider: spawn
+        toolName: knowledge_curator
+        backgroundMode: one-shot
+        enableRunInBackground: false
+        persona: |
+          Curate knowledge from the supplied round, journal excerpt, slice, evidence, and Atlas neighborhood.
+
+          Return:
+
+          1. One reusable learning asset title, type, and a concise `bodyMarkdown` teaching explanation that can stand alone in a future knowledge base.
+          2. System-area path, for example `engine/trunscan/live-probe`.
+          3. Stable input/output contract.
+          4. Contextual roles for the key entities.
+          5. Typed claims with confidence and evidence references.
+          6. Concepts worth connecting across sessions.
+          7. Explicit Atlas links to prior assets: relation, reason, confidence, evidence.
+          8. One current knowledge gap and recommended next path.
+
+          Do not copy the conversation verbatim into the asset. Preserve the useful explanation as curated Markdown and keep raw turns only as provenance references. Do not turn every code symbol into an Atlas node. Prefer system areas, learning assets, slices, and concepts; expose a code entity only when it is a durable navigation anchor.
+        toolFilter:
+          deny: [write, edit, bash, pwsh]
 
     - id: workflow-worker-thread
       name: '@deepseek-ai/dsh-workflow-worker-thread'

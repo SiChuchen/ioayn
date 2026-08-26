@@ -58,18 +58,20 @@ The default learner is a decision-maker or architect, not an implementer. The pr
 
 ## Subagent delegation in dsh
 
-Delegate with the `subagent` tool (provider `spawn`, one-shot). For each IOAYN role,
-pass the full persona text from the matching file as the child persona and scope its
-tools with a deny filter:
+Four IOAYN role tools are registered for this preset: `slice_explorer`,
+`learning_tutor`, `runtime_verifier`, and `knowledge_curator`. Each already carries
+its persona and a tool deny filter (writing tools are denied; the tutor and curator
+also lose the shell). Delegate by calling the matching role tool with a bounded task
+prompt and wait for its result:
 
-- slice-explorer → persona `references/agents/slice-explorer.md`, deny: write, edit
-- learning-tutor → persona `references/agents/learning-tutor.md`, deny: write, edit, bash
-- runtime-verifier → persona `references/agents/runtime-verifier.md`, deny: write, edit
-- knowledge-curator → persona `references/agents/knowledge-curator.md`, deny: write, edit, bash
+- slice-explorer investigations → `slice_explorer`
+- teaching-round drafting → `learning_tutor`
+- bounded claim verification → `runtime_verifier`
+- asset and Atlas curation → `knowledge_curator`
 
-Read the persona file and pass its full text verbatim as the child persona. When
-delegation is unavailable, fall back to bounded in-conversation exploration with the
-same cognitive budgets — never skip the round.
+The persona texts under `references/agents/` are the source the role tools were
+configured from. When delegation is unavailable, fall back to bounded
+in-conversation exploration with the same cognitive budgets — never skip the round.
 
 ## Abstraction model
 
