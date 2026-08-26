@@ -5,6 +5,7 @@ import type { Context } from '@deepseek-ai/cordis'
 import type { Agent } from '@deepseek-ai/dsh-agent'
 import type { Session, SessionEvent } from '@deepseek-ai/dsh-session'
 import { findWorkspace } from '../../server/src/core/workspace.js'
+import { SCHEMA_VERSION } from '../../server/src/core/constants.js'
 
 const DEDUPE_WINDOW_MS = 5000
 
@@ -23,12 +24,6 @@ const textOf = (blocks: unknown): string =>
 
 function readJson(path: string): any {
   try { return JSON.parse(readFileSync(path, 'utf8')) } catch { return null }
-}
-
-function readJsonLines(path: string): any[] {
-  if (!existsSync(path)) return []
-  return readFileSync(path, 'utf8').split(/\r?\n/).filter(Boolean)
-    .map(l => { try { return JSON.parse(l) } catch { return null } }).filter(Boolean)
 }
 
 function atomicWrite(path: string, value: unknown): void {
@@ -72,7 +67,10 @@ export function captureEvent(input: {
   }
   const createdAt = new Date().toISOString()
   const journalPath = join(workspace, 'journal', `${sessionId}.jsonl`)
-  const duplicate = readJsonLines(journalPath).slice(-20).some(t =>
+  // dedupe 只需最近 20 条有效记录：先按行取尾部再解析，不解析整份 journal（否则随轮次累积 O(n²)）。
+  const recentTurns = (existsSync(journalPath) ? readFileSync(journalPath, 'utf8').split(/\r?\n/).filter(Boolean).slice(-20) : [])
+    .map(l => { try { return JSON.parse(l) } catch { return null } }).filter(Boolean)
+  const duplicate = recentTurns.some(t =>
     Date.now() - Date.parse(String(t.created_at || '')) >= 0
     && Date.now() - Date.parse(String(t.created_at || '')) <= DEDUPE_WINDOW_MS
     && t.actor === input.actor && t.kind === input.kind && t.content === input.content
@@ -80,7 +78,7 @@ export function captureEvent(input: {
   if (duplicate) return 'duplicate'
   const fingerprint = createHash('sha256').update([input.externalSessionId, input.actor, input.kind, input.content].join('|')).digest('hex').slice(0, 16)
   const turn: CaptureTurn = {
-    schema_version: '1.1',
+    schema_version: SCHEMA_VERSION,
     id: safeId(`dsh-${input.kind}-${fingerprint}-${Date.now().toString(36)}`),
     session_id: sessionId,
     ...activeRoundId ? { round_id: activeRoundId } : {},
@@ -89,6 +87,7 @@ export function captureEvent(input: {
     related_entities: relatedEntities, related_assets: relatedAssets, created_at: createdAt,
   }
   mkdirSync(dirname(journalPath), { recursive: true })
+  // 主写入刻意不 try/catch：观察者（journal 捕获）自身的错误必须可见，只有下方回写才静默降级。
   appendFileSync(journalPath, `${JSON.stringify(turn)}\n`, 'utf8')
 
   // 以下回写与 capture-hook.mjs 对齐：journal 已落盘，回写失败只静默降级（journal capture remains the priority）。
@@ -134,6 +133,7 @@ export function deferCapture(cwd: string): boolean {
   const marker = readJson(markerPath)
   if (!marker?.active) return false
   const now = new Date().toISOString()
+  // 主写入刻意不 try/catch：marker 关闭失败必须可见；静默降级只属于 captureEvent 的回写路径。
   atomicWrite(markerPath, { active: false, learning_session_id: marker.learning_session_id, deferred_at: now, updated_at: now })
   return true
 }
@@ -160,6 +160,9 @@ export function attachJournal(ctx: Context): void {
   ctx.on('agent/disposed', ({ agent }: { agent: Agent }) => {
     // 子代理 dispose 不关 marker（delegationDepth > 0 直接 return）：只有顶层 agent 结束才 deferCapture。
     if ((agent.session.header.delegationDepth ?? 0) > 0) return
-    deferCapture(agent.session.header.cwd ?? process.cwd())
+    // cwd 未知时不 defer：process.cwd() 可能落在无关根目录，向上爬会误关外部活动工作区的 marker。
+    const cwd = agent.session.header.cwd
+    if (!cwd) return
+    deferCapture(cwd)
   })
 }
