@@ -7,5 +7,5 @@ await build({
   format: 'esm',
   target: 'node20',
   outfile: 'lib/index.js',
-  external: ['@deepseek-ai/cordis', '@deepseek-ai/dsh-tools'],
+  external: ['@deepseek-ai/cordis', '@deepseek-ai/cordis/*', '@deepseek-ai/dsh-tools', '@deepseek-ai/dsh-tools/*'],
 })
