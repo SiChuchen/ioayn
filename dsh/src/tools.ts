@@ -555,7 +555,19 @@ export function registerIoaynTools(ctx: Context): void {
       async execute(args, exec) {
         const store = storeFor(cwdOf(exec))
         const validated = proto.inputSchema.parse(args) // zod 复验：DSL 不承载的约束在此执行
-        return proto.execute(validated, store) as never
+        const result = (await proto.execute(validated, store)) as unknown
+        const envelope = result as { content?: Array<{ type?: string; text?: string }> } | null
+        const text = Array.isArray(envelope?.content)
+          ? envelope.content.find(block => block.type === 'text')?.text
+          : undefined
+        if (text !== undefined) {
+          try {
+            return JSON.parse(text) as never
+          } catch {
+            return { text } as never
+          }
+        }
+        return result as never
       },
     }))
   }
