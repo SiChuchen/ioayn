@@ -14,7 +14,7 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
-import { join, relative } from 'node:path'
+import { isAbsolute, join, relative } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
@@ -363,6 +363,15 @@ const rolePersonas = {} // toolName -> persona text, consumed by layer 3.5
     const installed = join(home, '.agent-presets', 'ioayn')
     for (const rel of ['agent.cordis.yml', 'preset.yml', 'skills/learn-code/SKILL.md', '.ioayn-dsh-version']) {
       if (!existsSync(join(installed, rel))) fail(layer, `install drill: ${rel} missing from ${installed}`)
+    }
+    // bin.mjs must rewrite the ioayn-dsh row of the INSTALLED copy to an
+    // absolute path to the plugin entry (dsh resolves bare row names from
+    // the harness base, not the profile's node_modules). The source template
+    // keeps the bare name, so layer 1's allowlist needs no change.
+    const installedRowName = readText(join(installed, 'agent.cordis.yml'))
+      .match(/- id: ioayn-tools\r?\n  name: '(.*)'/)?.[1]
+    if (installedRowName === undefined || !isAbsolute(installedRowName) || !existsSync(installedRowName)) {
+      fail(layer, `install drill: ioayn-tools row in the installed copy must be an absolute path to an existing file, got ${JSON.stringify(installedRowName)}`)
     }
   } catch (error) {
     fail(layer, `install drill failed: ${error.stderr?.toString().trim() ?? error.message}`)
