@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { execFileSync } from 'node:child_process'
+import { execFileSync, spawnSync } from 'node:child_process'
 import { mkdtempSync, existsSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -12,16 +12,19 @@ test('install/uninstall lifecycle', () => {
   const home = mkdtempSync(join(tmpdir(), 'ioayn-dsh-home-'))
   const env = { ...process.env, DSH_HOME: home }
   const out = (args) => execFileSync('node', [bin, ...args], { env, encoding: 'utf8' })
+  assert.equal(out(['status']).includes('not installed'), true, 'fresh home status must report not installed')
   out(['install'])
   assert.ok(existsSync(join(home, '.agent-presets', 'ioayn', 'agent.cordis.yml')))
   assert.ok(existsSync(join(home, '.agent-presets', 'ioayn', 'skills', 'learn-code', 'SKILL.md')))
   assert.ok(existsSync(join(home, '.agent-presets', 'ioayn', 'skills', 'learn-code', 'references', 'agents', 'slice-explorer.md')))
   assert.ok(existsSync(join(home, '.agent-presets', 'ioayn', '.ioayn-dsh-version')))
   assert.equal(out(['status']).includes('installed v'), true)
-  let failed = false
-  try { out(['install']) } catch { failed = true }
-  assert.ok(failed, 'second install must fail without --force')
+  const conflict = spawnSync('node', [bin, 'install'], { env, encoding: 'utf8' })
+  assert.equal(conflict.status, 1, 'second install must exit 1 without --force')
+  assert.equal(conflict.stderr.includes('already installed'), true, 'conflict must explain already installed')
   out(['install', '--force'])
+  assert.ok(existsSync(join(home, '.agent-presets', 'ioayn', '.ioayn-dsh-version')), 'version marker must survive --force reinstall')
+  assert.equal(out(['status']).includes('installed v'), true, 'status must report installed v after --force')
   out(['uninstall'])
   assert.equal(existsSync(join(home, '.agent-presets', 'ioayn')), false)
 })
