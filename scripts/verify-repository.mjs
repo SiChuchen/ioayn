@@ -29,6 +29,7 @@ const required = [
   'server/src/core/storage.ts',
   'server/src/core/atlas.ts',
   'server/src/core/workspace.ts',
+  'server/src/core/tools.ts',
   'server/src/validate-fixtures.ts',
   'server/dist/index.js',
   'schemas/learning-session.schema.json',
