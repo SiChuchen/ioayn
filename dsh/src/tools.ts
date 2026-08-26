@@ -23,6 +23,9 @@ const sourceSpec: ParameterPropertySpec = {
   additionalProperties: true,
 }
 
+// evidence 系 source 在 server 端必填（evidenceCommitInput / record_evidence），此处为带 required 的变体
+const sourceRequiredSpec: ParameterPropertySpec = { ...sourceSpec, required: true }
+
 // roleEntitySchema
 const roleEntitySpec: ParameterPropertySpec = {
   type: 'object',
@@ -135,7 +138,7 @@ const evidenceCommitSpec: ParameterPropertySpec = {
       required: true,
       enum: ['source', 'test', 'runtime_trace', 'log', 'network', 'database', 'git', 'documentation'],
     },
-    source: sourceSpec,
+    source: sourceRequiredSpec,
     confidence: { type: 'string', required: true, enum: ['high', 'medium', 'low'] },
     basisRefs: { type: 'array', items: { type: 'string' } },
     limitations: { type: 'array', items: { type: 'string' } },
@@ -260,7 +263,7 @@ export const IOAYN_TOOL_PARAMS: Record<string, ParameterSchemaSpec> = {
     claim: { type: 'string', required: true },
     claimType: { type: 'string', required: true, enum: ['fact', 'inference', 'unknown', 'conflict'] },
     kind: { type: 'string', required: true, enum: evidenceKindEnum },
-    source: sourceSpec,
+    source: sourceRequiredSpec,
     confidence: { type: 'string', required: true, enum: confidenceEnum },
     basisRefs: { type: 'array', items: { type: 'string' } },
     limitations: { type: 'array', items: { type: 'string' } },
