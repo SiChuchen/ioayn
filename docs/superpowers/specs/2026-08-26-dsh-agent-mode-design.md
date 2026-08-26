@@ -36,7 +36,7 @@ server/src/core/            ← schemas/storage/atlas/constants 工厂化重构�
    ▼                              ▼
 server/src/index.ts         dsh/src/{index,tools,journal}.ts
 （stdio MCP server，          （ioayn-dsh 插件）
-  Claude Code 路径，            ├─ defineTool × 18（薄壳，调 core；输入为
+  Claude Code 路径，            ├─ defineTool × 27（薄壳，调 core；输入为
   变成 core 的薄壳）            │   ParameterSchemaSpec DSL 手写 + 必填
                                │   output.schema/output.render）
                                ├─ 事件监听 → journal 捕获
