@@ -1,5 +1,7 @@
 /.ioayn/
 /server/node_modules/
+/dsh/lib/
+/dsh/node_modules/
 /server/dist/export-schemas.js
 /server/dist/validate-fixtures.js
 *.log

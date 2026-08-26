@@ -1,0 +1,5 @@
+# ioayn-dsh host-plane layer: intentionally empty in v0.1.0.
+# The IOAYN preset's agent-plane rows (tools/journal plugin, skills) live in
+# preset/agent.cordis.yml; this bundle's job is package distribution and the
+# install command. P2 native-plugin extensions would land here.
+[]
