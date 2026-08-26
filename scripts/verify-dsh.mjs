@@ -11,7 +11,7 @@
 // `npm --prefix dsh run build`.
 
 import { execFileSync } from 'node:child_process'
-import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs'
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import { join, relative } from 'node:path'
@@ -93,6 +93,7 @@ const rolePersonas = {} // toolName -> persona text, consumed by layer 3.5
   }
 
   if (rows !== undefined) {
+    const usedRowNames = new Set()
     const visit = (entries, where) => {
       if (!Array.isArray(entries)) {
         fail(layer, `${where}: expected an array of rows`)
@@ -103,13 +104,22 @@ const rolePersonas = {} // toolName -> persona text, consumed by layer 3.5
           fail(layer, `${where}: row without a non-empty string name: ${JSON.stringify(row)?.slice(0, 100)}`)
           continue
         }
+        usedRowNames.add(row.name)
         if (!ALLOWED_ROW_NAMES.has(row.name)) {
-          fail(layer, `${where}: row id=${JSON.stringify(row.id)} uses name ${JSON.stringify(row.name)} outside the allowlist`)
+          fail(layer, `${where}: row id=${JSON.stringify(row.id)} uses name ${JSON.stringify(row.name)} outside the allowlist — check the re-sync base noted at the top of dsh/preset/agent.cordis.yml before extending ALLOWED_ROW_NAMES`)
         }
         if (row.name === 'cordis:group' && row.config !== undefined) visit(row.config, `${where}/${row.id} (group config)`)
       }
     }
     visit(rows, 'agent.cordis.yml')
+    // The allowlist is bidirectional: an entry no row uses anymore is stale.
+    // ioayn-dsh and cordis:group are structural names, so they stay exempt.
+    const structurallyExempt = new Set(['ioayn-dsh', 'cordis:group'])
+    for (const name of ALLOWED_ROW_NAMES) {
+      if (!usedRowNames.has(name) && !structurallyExempt.has(name)) {
+        fail(layer, `allowlist entry ${name} is not used by any row in agent.cordis.yml (stale ALLOWED_ROW_NAMES entry — remove it)`)
+      }
+    }
   }
 
   const delegation = Array.isArray(rows) ? rows.find((row) => row?.id === 'delegation') : undefined
@@ -182,6 +192,11 @@ const rolePersonas = {} // toolName -> persona text, consumed by layer 3.5
   for (const expected of expectedSkills) {
     if (!skillDirs.includes(expected)) fail(layer, `missing preset skill directory ${expected}/`)
   }
+  for (const dir of skillDirs) {
+    if (!expectedSkills.includes(dir)) {
+      fail(layer, `unexpected preset skill directory ${dir}/ (preset skills must match the expected set exactly)`)
+    }
+  }
 
   for (const dir of skillDirs) {
     const skillPath = join(skillsDir, dir, 'SKILL.md')
@@ -221,7 +236,8 @@ const rolePersonas = {} // toolName -> persona text, consumed by layer 3.5
   }
 
   // Residual Claude-host tokens must not survive the dsh adaptation.
-  const bannedTokens = ['CLAUDE_SKILL_DIR', '$ARGUMENTS', '/ioayn:', 'MCP']
+  // ('MCP' needs no entry here: the /mcp/i check below covers it.)
+  const bannedTokens = ['CLAUDE_SKILL_DIR', '$ARGUMENTS', '/ioayn:']
   for (const file of walk(skillsDir)) {
     const rel = toRel(file)
     const text = readText(file)
@@ -265,7 +281,7 @@ const rolePersonas = {} // toolName -> persona text, consumed by layer 3.5
         if (!spec) continue
         const shapeKeys = Object.keys(tool.inputSchema?.shape ?? {})
         const specKeys = Object.keys(spec)
-        const schemaOnly = shapeKeys.filter((key) => !(key in spec))
+        const schemaOnly = shapeKeys.filter((key) => !Object.hasOwn(spec, key))
         const specOnly = specKeys.filter((key) => !shapeKeys.includes(key))
         if (schemaOnly.length) fail(layer, `${tool.name}: inputSchema params missing from the dsh DSL spec: ${schemaOnly.join(', ')}`)
         if (specOnly.length) fail(layer, `${tool.name}: dsh DSL spec has params absent from inputSchema: ${specOnly.join(', ')}`)
@@ -279,18 +295,21 @@ const rolePersonas = {} // toolName -> persona text, consumed by layer 3.5
 {
   const layer = 'layer 3.5 copy drift'
   const directoryPairs = [
-    { preset: 'preset/skills/learn-code/references', source: 'skills/learn-code/references', suffix: '.md' },
-    { preset: 'preset/skills/learn-code/references/agents', source: 'agents', suffix: '.md' },
-    { preset: 'preset/skills/learn-code/templates', source: 'skills/learn-code/templates', suffix: '' },
+    { preset: 'preset/skills/learn-code/references', source: 'skills/learn-code/references' },
+    { preset: 'preset/skills/learn-code/references/agents', source: 'agents' },
+    { preset: 'preset/skills/learn-code/templates', source: 'skills/learn-code/templates' },
   ]
-  for (const { preset, source, suffix } of directoryPairs) {
+  for (const { preset, source } of directoryPairs) {
     const presetDir = join(dshDir, preset)
     const sourceDir = join(root, source)
     let presetFiles
     let sourceFiles
     try {
-      presetFiles = readdirSync(presetDir).filter((name) => name.endsWith(suffix))
-      sourceFiles = readdirSync(sourceDir).filter((name) => name.endsWith(suffix))
+      // Compare every regular file, not just *.md copies: isFile() filtering
+      // also keeps nested directories (e.g. references/agents/) out of the
+      // comparison on both sides.
+      presetFiles = readdirSync(presetDir).filter((name) => statSync(join(presetDir, name)).isFile())
+      sourceFiles = readdirSync(sourceDir).filter((name) => statSync(join(sourceDir, name)).isFile())
     } catch (error) {
       fail(layer, `cannot list ${preset} / ${source}: ${error.message}`)
       continue
