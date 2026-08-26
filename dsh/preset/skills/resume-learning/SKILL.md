@@ -10,7 +10,7 @@ disable-model-invocation: true
 
 Call `preflight_learning`, then `resume_learning_context` using the message text after /resume-learning only when it is a valid session identifier.
 
-Call `resume_learning_session` after the user confirms which stored session to continue, so opt-in Hook capture is re-enabled without overwriting prior history.
+Call `resume_learning_session` after the user confirms which stored session to continue, so opt-in journal capture is re-enabled without overwriting prior history.
 
 Present:
 

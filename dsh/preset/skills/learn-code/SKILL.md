@@ -65,7 +65,7 @@ tools with a deny filter:
 - slice-explorer → persona `references/agents/slice-explorer.md`, deny: write, edit
 - learning-tutor → persona `references/agents/learning-tutor.md`, deny: write, edit, bash
 - runtime-verifier → persona `references/agents/runtime-verifier.md`, deny: write, edit
-- knowledge-curator → persona `references/agents/knowledge-curator.md`, deny: write, edit
+- knowledge-curator → persona `references/agents/knowledge-curator.md`, deny: write, edit, bash
 
 Read the persona file and pass its full text verbatim as the child persona. When
 delegation is unavailable, fall back to bounded in-conversation exploration with the
@@ -114,7 +114,7 @@ Convert the user request into:
 - starting level;
 - target level.
 
-Call `create_goal` for a new goal. Then call `start_learning_session`, including the original user prompt so the first turn is preserved even though hook capture begins after the tool call. For an existing session, call `resume_learning_session` instead; never overwrite it by calling `start_learning_session` with the same ID.
+Call `create_goal` for a new goal. Then call `start_learning_session`, including the original user prompt so the first turn is preserved even though journal capture begins after the tool call. For an existing session, call `resume_learning_session` instead; never overwrite it by calling `start_learning_session` with the same ID.
 
 ### 2.7 Ensure the teacher index
 
