@@ -2,6 +2,8 @@ import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, writeF
 import { dirname, join } from 'node:path'
 import { createHash, randomUUID } from 'node:crypto'
 import type { Context } from '@deepseek-ai/cordis'
+import type { Agent } from '@deepseek-ai/dsh-agent'
+import type { Session, SessionEvent } from '@deepseek-ai/dsh-session'
 import { findWorkspace } from '../../server/src/core/workspace.js'
 
 const DEDUPE_WINDOW_MS = 5000
@@ -137,27 +139,27 @@ export function deferCapture(cwd: string): boolean {
 }
 
 export function attachJournal(ctx: Context): void {
-  const sessionCwd = (session: unknown): string | undefined =>
-    (session as { header?: { cwd?: string } })?.header?.cwd
-  const sessionIdOf = (session: unknown): string | undefined =>
-    (session as { header?: { id?: string } })?.header?.id
-
-  ctx.on('session/event', (session: unknown, event: { type: string; data?: unknown }) => {
-    const header = (session as { header?: { delegationDepth?: number } })?.header
-    if (header?.delegationDepth && header.delegationDepth > 0) return // 子代理会话不入 journal
-    const cwd = sessionCwd(session)
+  ctx.on('session/event', (session: Session, event: SessionEvent) => {
+    // 子代理会话不入 journal：SessionHeader.delegationDepth 顶层缺省或 0，子代理 >0（dsh-session lib/types/types.d.ts:70）。
+    if ((session.header.delegationDepth ?? 0) > 0) return
+    const cwd = session.header.cwd
     if (!cwd) return
     if (event.type === 'user/message') {
+      // data 即 UserMessage 本体（types.d.ts:262 'user/message': UserMessage）：文本在 data.content，来源在 data.source。
       const data = event.data as { content?: unknown; source?: { kind?: string } } | undefined
-      if (data?.source?.kind && data.source.kind !== 'human') return // 插件注入的 user 消息不记
-      captureEvent({ cwd, actor: 'user', kind: 'prompt', content: textOf(data?.content), externalSessionId: sessionIdOf(session) })
+      const kind = data?.source?.kind
+      if (kind !== undefined && kind !== 'user') return // 插件/工具注入的 user 消息不记；无 source 或无 kind 时放行（dsh-llm lib/types/message.d.ts:94 kind 仅 user/plugin/model/tool）
+      captureEvent({ cwd, actor: 'user', kind: 'prompt', content: textOf(data?.content), externalSessionId: session.header.id })
     } else if (event.type === 'assistant/message') {
-      const data = event.data as { content?: unknown } | undefined
-      captureEvent({ cwd, actor: 'agent', kind: 'teaching', content: textOf(data?.content), externalSessionId: sessionIdOf(session) })
+      // data 形状为 { turn, step, message: AssistantMessage, usage? }（types.d.ts:275-280）：文本在 data.message.content。
+      const data = event.data as { message?: { content?: unknown } } | undefined
+      captureEvent({ cwd, actor: 'agent', kind: 'teaching', content: textOf(data?.message?.content), externalSessionId: session.header.id })
     }
   })
 
-  ctx.on('agent/disposed', ({ agent }: { agent: { session?: { header?: { cwd?: string } } } }) => {
-    deferCapture(agent?.session?.header?.cwd ?? process.cwd())
+  ctx.on('agent/disposed', ({ agent }: { agent: Agent }) => {
+    // 子代理 dispose 不关 marker（delegationDepth > 0 直接 return）：只有顶层 agent 结束才 deferCapture。
+    if ((agent.session.header.delegationDepth ?? 0) > 0) return
+    deferCapture(agent.session.header.cwd ?? process.cwd())
   })
 }

@@ -33,17 +33,22 @@ test('attachJournal routes session events with subagent and plugin gating', asyn
   mkdirSync(join(ws, 'runtime'), { recursive: true })
   mkdirSync(join(ws, 'sessions'), { recursive: true })
   mkdirSync(join(ws, 'rounds'), { recursive: true })
+  mkdirSync(join(ws, 'assets'), { recursive: true })
   writeFileSync(join(ws, 'runtime', 'active-session.json'), JSON.stringify({ active: true, learning_session_id: 's2' }))
   writeFileSync(join(ws, 'sessions', 's2.json'), JSON.stringify({ id: 's2', current_round_id: 'r1', external_session_ids: [], updated_at: '2026-01-01T00:00:00Z' }))
-  writeFileSync(join(ws, 'rounds', 'r1.json'), JSON.stringify({ id: 'r1', introduced_entities: [{ id: 'ent-1' }], learning_asset_id: null, user_turn_refs: [], agent_turn_refs: [], updated_at: '2026-01-01T00:00:00Z' }))
+  writeFileSync(join(ws, 'rounds', 'r1.json'), JSON.stringify({ id: 'r1', introduced_entities: [{ id: 'ent-1' }], learning_asset_id: 'a1', user_turn_refs: [], agent_turn_refs: [], updated_at: '2026-01-01T00:00:00Z' }))
+  writeFileSync(join(ws, 'assets', 'a1.json'), JSON.stringify({ id: 'a1', source_turn_refs: [], created_at: '2026-01-01T00:00:00Z', updated_at: '2026-01-01T00:00:00Z' }))
   const listeners = {}
   const ctx = { on: (name, fn) => { listeners[name] = fn } }
   m.apply({ ...ctx, tools: { register: () => {} }, logger: { warn: () => {} } })
+  // 子代理 dispose 不关 marker：delegationDepth 1 的 agent 结束后 marker 仍 active，后续 user 消息仍可捕获
+  listeners['agent/disposed']({ agent: { session: { header: { cwd: project, delegationDepth: 1 } } } })
+  assert.equal(JSON.parse(readFileSync(join(ws, 'runtime', 'active-session.json'), 'utf8')).active, true)
   const session = { header: { cwd: project, id: 'ext-1', delegationDepth: 0 } }
-  listeners['session/event'](session, { type: 'user/message', data: { content: [{ type: 'text', text: '路由测试' }], source: { kind: 'human' } } })
-  listeners['session/event'](session, { type: 'assistant/message', data: { content: [{ type: 'text', text: '教学回答' }] } })
+  listeners['session/event'](session, { type: 'user/message', data: { content: [{ type: 'text', text: '路由测试' }], source: { kind: 'user' } } })
+  listeners['session/event'](session, { type: 'assistant/message', data: { turn: 1, step: 1, message: { content: [{ type: 'text', text: '教学回答' }] } } })
   listeners['session/event'](session, { type: 'user/message', data: { content: [{ type: 'text', text: '插件注入' }], source: { kind: 'plugin' } } }) // 应被忽略
-  listeners['session/event']({ header: { cwd: project, delegationDepth: 2 } }, { type: 'assistant/message', data: { content: [{ type: 'text', text: '子代理输出' }] } }) // 应被忽略
+  listeners['session/event']({ header: { cwd: project, delegationDepth: 2 } }, { type: 'assistant/message', data: { turn: 1, step: 1, message: { content: [{ type: 'text', text: '子代理输出' }] } } }) // 应被忽略
   listeners['agent/disposed']({ agent: { session: { header: { cwd: project } } } })
   const lines = readFileSync(join(ws, 'journal', 's2.jsonl'), 'utf8').trim().split('\n').map(l => JSON.parse(l))
   assert.equal(lines.length, 2)
@@ -54,5 +59,7 @@ test('attachJournal routes session events with subagent and plugin gating', asyn
   const round = JSON.parse(readFileSync(join(ws, 'rounds', 'r1.json'), 'utf8'))
   assert.equal(round.user_turn_refs.length, 1); assert.equal(round.agent_turn_refs.length, 1)
   assert.deepEqual(lines[0].related_entities, ['ent-1']); assert.deepEqual(lines[1].related_entities, ['ent-1'])
+  // 学习资产回写：两条被捕获的 turn 都进入 source_turn_refs
+  assert.equal(JSON.parse(readFileSync(join(ws, 'assets', 'a1.json'), 'utf8')).source_turn_refs.length, 2)
   assert.equal(JSON.parse(readFileSync(join(ws, 'runtime', 'active-session.json'), 'utf8')).active, false)
 })
