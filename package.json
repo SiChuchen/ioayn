@@ -8,7 +8,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "setup": "npm --prefix server ci",
+    "setup": "npm --prefix server ci && npm --prefix dsh ci",
     "typecheck": "npm --prefix server run typecheck",
     "build": "npm --prefix server run build",
     "test": "npm --prefix server run test:smoke",

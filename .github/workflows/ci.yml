@@ -15,5 +15,7 @@ jobs:
           node-version: 20
       - name: Install server dependencies
         run: npm --prefix server ci
+      - name: Install dsh dependencies
+        run: npm --prefix dsh ci
       - name: Verify (repo checks, typecheck, build, schemas, smoke tests)
         run: npm run verify

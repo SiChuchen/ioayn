@@ -246,7 +246,7 @@ npm run setup
 npm run verify
 ```
 
-`verify` 依次执行：仓库一致性检查 → TypeScript strict 检查 → MCP 构建 → JSON Schema 生成 → 端到端 smoke 测试（含教师索引、紧凑响应、Atlas 自愈、journal 回填等断言）→ 再次仓库检查。CI 在每次 push/PR 时自动运行同一套命令。
+`verify` 依次执行：仓库一致性检查 → TypeScript strict 检查 → MCP 构建 → JSON Schema 生成 → 端到端 smoke 测试（含教师索引、紧凑响应、Atlas 自愈、journal 回填等断言）→ dsh 阶段（dsh typecheck、构建、journal/bin 单测，以及 preset 结构/技能/工具对齐/拷贝漂移/安装演练五层检查）→ 再次仓库检查。CI 在每次 push/PR 时自动运行同一套命令。
 
 改 `SKILL.md` 可在当前会话热加载；改 Hooks、Agents 或 MCP 后执行 `claude plugin update ioayn@ioayn` 并重启会话。
 

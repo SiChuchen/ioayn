@@ -29,3 +29,5 @@ npx ioayn-dsh install                        # 拷贝 preset 到 $DSH_HOME/.agen
 ## 开发
 
 `npm run verify`（根目录）覆盖 dsh 全链：typecheck、构建、journal/bin 测试、preset 结构/技能/工具对齐/拷贝漂移/安装演练五层检查。
+
+verify 的拷贝漂移检查要求 preset 内 references/templates/agents 与 Claude Code 侧源文件逐字节一致，且 preset 技能树禁含 'mcp' 字样——改共享源文件时需同步两侧。
