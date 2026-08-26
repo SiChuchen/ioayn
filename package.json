@@ -13,7 +13,8 @@
     "build": "npm --prefix server run build",
     "test": "npm --prefix server run test:smoke",
     "check:repo": "node scripts/verify-repository.mjs",
-    "verify": "npm run check:repo && npm run typecheck && npm run build && npm run schemas && npm run test && npm run check:repo",
+    "verify:dsh": "npm --prefix dsh run typecheck && npm --prefix dsh run build && node --test dsh/scripts/journal.test.mjs dsh/scripts/bin.test.mjs && node scripts/verify-dsh.mjs",
+    "verify": "npm run check:repo && npm run typecheck && npm run build && npm run schemas && npm run test && npm run verify:dsh && npm run check:repo",
     "schemas": "npm --prefix server run schemas"
   }
 }
