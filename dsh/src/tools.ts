@@ -190,6 +190,7 @@ const assetTypeEnum = ['goal', 'slice', 'evidence', 'unknown', 'session', 'round
  * 由 registerIoaynTools 内的 inputSchema.parse（zod 复验）作为唯一执行点。
  * 字段名与必填/可选逐字对齐 server/src/core/tools.ts 的 inputSchema。
  */
+// 新增工具时：同步补 DSL entry 与参数 description（模型面指引），对齐由 verify-dsh 检查强制。
 export const IOAYN_TOOL_PARAMS: Record<string, ParameterSchemaSpec> = {
   preflight_learning: {},
   init_workspace: {},
@@ -532,10 +533,19 @@ export const IOAYN_TOOL_PARAMS: Record<string, ParameterSchemaSpec> = {
   },
 }
 
+// WorkspaceStore 无内存态；缓存仅避免重复构造，reset_workspace 后旧实例与新实例读写同一文件集。
 const storeCache = new Map<string, WorkspaceStore>()
+
+// 注册期注入的宿主日志（避免 storeFor 依赖 ctx）
+let ctxLogger: ((msg: string) => void) | undefined
+const warnedFallbackRoots = new Set<string>()
 
 function storeFor(cwd: string | undefined): WorkspaceStore {
   const start = cwd ?? process.cwd()
+  if (cwd === undefined && !warnedFallbackRoots.has(start)) {
+    warnedFallbackRoots.add(start)
+    ctxLogger?.(`ioayn-dsh: tool call carried no session cwd; falling back to process.cwd() (${start})`)
+  }
   const ioaynDir = findWorkspace(start) ?? join(start, '.ioayn') // 与 MCP 路径一致：无工作区时以 cwd 为根（init_workspace 负责创建）
   const root = dirname(ioaynDir)
   let store = storeCache.get(root)
@@ -544,6 +554,7 @@ function storeFor(cwd: string | undefined): WorkspaceStore {
 }
 
 export function registerIoaynTools(ctx: Context): void {
+  ctxLogger = (msg: string) => { ctx.logger.warn(msg) }
   const cwdOf = (exec: unknown): string | undefined =>
     (exec as { agent?: { session?: { header?: { cwd?: string } } } })?.agent?.session?.header?.cwd
 
@@ -557,7 +568,17 @@ export function registerIoaynTools(ctx: Context): void {
       output: { schema: jsonOutput, render: renderJson },
       async execute(args, exec) {
         const store = storeFor(cwdOf(exec))
-        const validated = proto.inputSchema.parse(args) // zod 复验：DSL 不承载的约束在此执行
+        let validated: unknown
+        try {
+          validated = proto.inputSchema.parse(args) // zod 复验：DSL 不承载的约束在此执行
+        } catch (error) {
+          const issues = (error as { issues?: Array<{ path: Array<string | number | symbol>; message: string }> }).issues
+          if (Array.isArray(issues)) {
+            const brief = issues.slice(0, 8).map(i => `${i.path.map(String).join('.') || '(root)'}: ${i.message}`).join('; ')
+            throw new Error(`invalid ${proto.name} arguments: ${brief}${issues.length > 8 ? ` (+${issues.length - 8} more)` : ''}`)
+          }
+          throw error
+        }
         const result = (await proto.execute(validated, store)) as unknown
         const envelope = result as { content?: Array<{ type?: string; text?: string }> } | null
         const text = Array.isArray(envelope?.content)
