@@ -13,7 +13,7 @@ import {
   sessionSchema,
   sliceSchema,
   unknownSchema,
-} from "./schemas.js";
+} from "./core/schemas.js";
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
 

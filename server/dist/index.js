@@ -2980,7 +2980,7 @@ var require_compile = __commonJS({
       const schOrFunc = root.refs[ref];
       if (schOrFunc)
         return schOrFunc;
-      let _sch = resolve3.call(this, root, ref);
+      let _sch = resolve4.call(this, root, ref);
       if (_sch === void 0) {
         const schema = (_a = root.localRefs) === null || _a === void 0 ? void 0 : _a[ref];
         const { schemaId } = this.opts;
@@ -3007,7 +3007,7 @@ var require_compile = __commonJS({
     function sameSchemaEnv(s1, s2) {
       return s1.schema === s2.schema && s1.root === s2.root && s1.baseId === s2.baseId;
     }
-    function resolve3(root, ref) {
+    function resolve4(root, ref) {
       let sch;
       while (typeof (sch = this.refs[ref]) == "string")
         ref = sch;
@@ -3634,21 +3634,21 @@ var require_fast_uri = __commonJS({
         normalizeString(uri, options);
       } else if (typeof uri === "object") {
         uri = /** @type {T} */
-        parse3(serialize(uri, options), options);
+        parse4(serialize(uri, options), options);
       }
       return uri;
     }
-    function resolve3(baseURI, relativeURI, options) {
+    function resolve4(baseURI, relativeURI, options) {
       const schemelessOptions = options ? Object.assign({ scheme: "null" }, options) : { scheme: "null" };
-      const resolved = resolveComponent(parse3(baseURI, schemelessOptions), parse3(relativeURI, schemelessOptions), schemelessOptions, true);
+      const resolved = resolveComponent(parse4(baseURI, schemelessOptions), parse4(relativeURI, schemelessOptions), schemelessOptions, true);
       schemelessOptions.skipEscape = true;
       return serialize(resolved, schemelessOptions);
     }
     function resolveComponent(base, relative2, options, skipNormalization) {
       const target = {};
       if (!skipNormalization) {
-        base = parse3(serialize(base, options), options);
-        relative2 = parse3(serialize(relative2, options), options);
+        base = parse4(serialize(base, options), options);
+        relative2 = parse4(serialize(relative2, options), options);
       }
       options = options || {};
       if (!options.tolerant && relative2.scheme) {
@@ -3877,7 +3877,7 @@ var require_fast_uri = __commonJS({
       }
       return { parsed, malformedAuthorityOrPort };
     }
-    function parse3(uri, opts) {
+    function parse4(uri, opts) {
       return parseWithStatus(uri, opts).parsed;
     }
     function normalizeString(uri, opts) {
@@ -3902,11 +3902,11 @@ var require_fast_uri = __commonJS({
     var fastUri = {
       SCHEMES,
       normalize,
-      resolve: resolve3,
+      resolve: resolve4,
       resolveComponent,
       equal,
       serialize,
-      parse: parse3
+      parse: parse4
     };
     module.exports = fastUri;
     module.exports.default = fastUri;
@@ -26860,7 +26860,7 @@ var Protocol = class {
           return;
         }
         const pollInterval = task2.pollInterval ?? this._options?.defaultTaskPollInterval ?? 1e3;
-        await new Promise((resolve3) => setTimeout(resolve3, pollInterval));
+        await new Promise((resolve4) => setTimeout(resolve4, pollInterval));
         options?.signal?.throwIfAborted();
       }
     } catch (error46) {
@@ -26877,7 +26877,7 @@ var Protocol = class {
    */
   request(request, resultSchema, options) {
     const { relatedRequestId, resumptionToken, onresumptiontoken, task, relatedTask } = options ?? {};
-    return new Promise((resolve3, reject) => {
+    return new Promise((resolve4, reject) => {
       const earlyReject = (error46) => {
         reject(error46);
       };
@@ -26955,7 +26955,7 @@ var Protocol = class {
           if (!parseResult.success) {
             reject(parseResult.error);
           } else {
-            resolve3(parseResult.data);
+            resolve4(parseResult.data);
           }
         } catch (error46) {
           reject(error46);
@@ -27216,12 +27216,12 @@ var Protocol = class {
       }
     } catch {
     }
-    return new Promise((resolve3, reject) => {
+    return new Promise((resolve4, reject) => {
       if (signal.aborted) {
         reject(new McpError(ErrorCode.InvalidRequest, "Request cancelled"));
         return;
       }
-      const timeoutId = setTimeout(resolve3, interval);
+      const timeoutId = setTimeout(resolve4, interval);
       signal.addEventListener("abort", () => {
         clearTimeout(timeoutId);
         reject(new McpError(ErrorCode.InvalidRequest, "Request cancelled"));
@@ -28321,7 +28321,7 @@ var McpServer = class {
     let task = createTaskResult.task;
     const pollInterval = task.pollInterval ?? 5e3;
     while (task.status !== "completed" && task.status !== "failed" && task.status !== "cancelled") {
-      await new Promise((resolve3) => setTimeout(resolve3, pollInterval));
+      await new Promise((resolve4) => setTimeout(resolve4, pollInterval));
       const updatedTask = await extra.taskStore.getTask(taskId);
       if (!updatedTask) {
         throw new McpError(ErrorCode.InternalError, `Task ${taskId} not found during polling`);
@@ -28970,12 +28970,12 @@ var StdioServerTransport = class {
     this.onclose?.();
   }
   send(message) {
-    return new Promise((resolve3) => {
+    return new Promise((resolve4) => {
       const json2 = serializeMessage(message);
       if (this._stdout.write(json2)) {
-        resolve3();
+        resolve4();
       } else {
-        this._stdout.once("drain", resolve3);
+        this._stdout.once("drain", resolve4);
       }
     });
   }
@@ -28983,10 +28983,10 @@ var StdioServerTransport = class {
 
 // src/index.ts
 import { existsSync as existsSync2, readFileSync as readFileSync2, readdirSync as readdirSync2 } from "node:fs";
-import { basename as basename2, join as join2, relative, resolve as resolve2 } from "node:path";
+import { basename as basename2, join as join3, relative, resolve as resolve3 } from "node:path";
 import { randomUUID as randomUUID3 } from "node:crypto";
 
-// src/constants.ts
+// src/core/constants.ts
 var VERSION = "1.1.3";
 var SCHEMA_VERSION = "1.1";
 var ABSTRACTION_LEVELS = ["L0", "L1", "L2", "L3", "L4", "L5"];
@@ -29045,7 +29045,7 @@ var ATLAS_EDGE_TYPES = [
   "SHARES_CONCEPT_WITH"
 ];
 
-// src/schemas.ts
+// src/core/schemas.ts
 var idSchema = external_exports3.string().regex(/^[a-z0-9][a-z0-9_-]{0,119}$/);
 var timestampSchema = external_exports3.string().datetime();
 var abstractionLevelSchema = external_exports3.enum(ABSTRACTION_LEVELS);
@@ -29395,407 +29395,8 @@ var schemaMap = {
   atlas_edge: atlasEdgeSchema
 };
 
-// src/storage.ts
-import {
-  appendFileSync,
-  copyFileSync,
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  readdirSync,
-  realpathSync,
-  renameSync,
-  rmSync,
-  statSync,
-  writeFileSync
-} from "node:fs";
-import { basename, dirname, join, resolve } from "node:path";
-import { execFileSync } from "node:child_process";
-import { createHash, randomUUID } from "node:crypto";
-var WorkspaceStore = class {
-  rootDir;
-  canonicalRoot;
-  workspaceDir;
-  constructor(root) {
-    this.rootDir = resolve(root);
-    if (!existsSync(this.rootDir) || !statSync(this.rootDir).isDirectory()) {
-      throw new Error(`IOAYN_PROJECT_DIR is not a directory: ${this.rootDir}`);
-    }
-    this.canonicalRoot = realpathSync(this.rootDir);
-    this.workspaceDir = join(this.canonicalRoot, ".ioayn");
-  }
-  now() {
-    return (/* @__PURE__ */ new Date()).toISOString();
-  }
-  slug(input) {
-    const value = input.normalize("NFKD").toLowerCase().replace(/[^a-z0-9_-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
-    return value || `item-${this.shortHash(input)}`;
-  }
-  shortHash(input) {
-    return createHash("sha256").update(input).digest("hex").slice(0, 10);
-  }
-  git(args) {
-    try {
-      return execFileSync("git", args, {
-        cwd: this.canonicalRoot,
-        encoding: "utf8",
-        stdio: ["ignore", "pipe", "ignore"],
-        timeout: 1e4
-      }).trim();
-    } catch {
-      return null;
-    }
-  }
-  getSnapshot() {
-    const topLevel = this.git(["rev-parse", "--show-toplevel"]);
-    if (!topLevel) {
-      return {
-        project_root: this.canonicalRoot,
-        is_git_repository: false,
-        branch: "NO_GIT",
-        commit: "NO_GIT_REPOSITORY",
-        dirty: false,
-        workspace_dirty: false,
-        knowledge_dirty: false,
-        captured_at: this.now()
-      };
-    }
-    const branch = this.git(["branch", "--show-current"]) || "DETACHED_HEAD";
-    const commit = this.git(["rev-parse", "HEAD"]) || "UNKNOWN_COMMIT";
-    const status = this.git(["status", "--porcelain=v1"]);
-    const sourceStatus = this.git([
-      "status",
-      "--porcelain=v1",
-      "--",
-      ".",
-      ":(exclude).ioayn",
-      ":(exclude).ioayn/**"
-    ]);
-    const knowledgeStatus = this.git(["status", "--porcelain=v1", "--", ".ioayn"]);
-    return {
-      project_root: this.canonicalRoot,
-      git_root: resolve(topLevel),
-      is_git_repository: true,
-      branch,
-      commit,
-      dirty: Boolean(sourceStatus),
-      workspace_dirty: Boolean(status),
-      knowledge_dirty: Boolean(knowledgeStatus),
-      captured_at: this.now()
-    };
-  }
-  revision(snapshot = this.getSnapshot()) {
-    return { branch: snapshot.branch, commit: snapshot.commit, dirty: snapshot.dirty };
-  }
-  changedSourceFiles(fromCommit, toCommit) {
-    if (!fromCommit || !toCommit || fromCommit === toCommit) return [];
-    const output = this.git([
-      "diff",
-      "--name-only",
-      fromCommit,
-      toCommit,
-      "--",
-      ".",
-      ":(exclude).ioayn",
-      ":(exclude).ioayn/**"
-    ]);
-    if (output === null) return null;
-    return output.split(/\r?\n/).filter(Boolean);
-  }
-  ensureWorkspace() {
-    mkdirSync(this.workspaceDir, { recursive: true });
-    for (const folder of Object.values(ASSET_FOLDERS)) {
-      mkdirSync(join(this.workspaceDir, folder), { recursive: true });
-    }
-    for (const folder of PERSONAL_FOLDERS) {
-      mkdirSync(join(this.workspaceDir, folder), { recursive: true });
-    }
-    mkdirSync(join(this.workspaceDir, "runtime", "transactions"), { recursive: true });
-    this.ensureWorkspaceGitignore();
-    const manifestPath = join(this.workspaceDir, "manifest.json");
-    if (!existsSync(manifestPath)) {
-      const snapshot = this.getSnapshot();
-      const projectId = `${this.slug(basename(this.canonicalRoot)).slice(0, 55)}-${this.shortHash(this.canonicalRoot)}`;
-      this.atomicWriteJson(manifestPath, {
-        schema_version: SCHEMA_VERSION,
-        project_id: projectId,
-        project_root: ".",
-        created_at: this.now(),
-        updated_at: this.now(),
-        current_goal_id: null,
-        current_session_id: null,
-        initialized_revision: {
-          branch: snapshot.branch,
-          commit: snapshot.commit,
-          dirty: snapshot.dirty,
-          is_git_repository: snapshot.is_git_repository,
-          captured_at: snapshot.captured_at
-        },
-        capabilities: {
-          persistent_memory: true,
-          automatic_journal_capture: true,
-          cognitive_atlas: true,
-          recoverable_round_commit: true
-        }
-      });
-    }
-  }
-  ensureWorkspaceGitignore() {
-    const path = join(this.workspaceDir, ".gitignore");
-    const content = [
-      "# IOAYN personal learning journal and runtime state",
-      "journal/",
-      "sessions/",
-      "rounds/",
-      "checkpoints/",
-      "runtime/",
-      "*.tmp-*",
-      "*.bak-*",
-      ""
-    ].join("\n");
-    if (!existsSync(path) || readFileSync(path, "utf8") !== content) {
-      writeFileSync(path, content, "utf8");
-    }
-  }
-  manifest() {
-    this.ensureWorkspace();
-    return this.readJson(join(this.workspaceDir, "manifest.json"));
-  }
-  manifestVersion() {
-    const value = this.manifest();
-    return String(value.schema_version || "unknown");
-  }
-  updateManifest(patch) {
-    const current = this.manifest();
-    const next = { ...current, ...patch, updated_at: this.now() };
-    manifestSchema.parse(next);
-    this.atomicWriteJson(join(this.workspaceDir, "manifest.json"), next);
-  }
-  atomicWriteJson(path, value) {
-    mkdirSync(dirname(path), { recursive: true });
-    const temp = `${path}.tmp-${process.pid}-${randomUUID()}`;
-    writeFileSync(temp, `${JSON.stringify(value, null, 2)}
-`, "utf8");
-    renameSync(temp, path);
-  }
-  appendJsonLine(path, value) {
-    mkdirSync(dirname(path), { recursive: true });
-    appendFileSync(path, `${JSON.stringify(value)}
-`, "utf8");
-  }
-  readJson(path) {
-    return JSON.parse(readFileSync(path, "utf8"));
-  }
-  readJsonLines(path) {
-    if (!existsSync(path)) return [];
-    return readFileSync(path, "utf8").split(/\r?\n/).filter(Boolean).map((line) => JSON.parse(line));
-  }
-  assetPath(type, id) {
-    idSchema.parse(id);
-    this.ensureWorkspace();
-    return join(this.workspaceDir, ASSET_FOLDERS[type], `${id}.json`);
-  }
-  saveAsset(type, value) {
-    const parsed = schemaMap[type].parse(value);
-    this.atomicWriteJson(this.assetPath(type, parsed.id), parsed);
-    return parsed;
-  }
-  getAsset(type, id) {
-    const path = this.assetPath(type, id);
-    return existsSync(path) ? this.readJson(path) : null;
-  }
-  listAssets(type) {
-    this.ensureWorkspace();
-    const types = type ? [type] : [...ASSET_TYPES];
-    const result = {};
-    for (const currentType of types) {
-      const directory = join(this.workspaceDir, ASSET_FOLDERS[currentType]);
-      result[currentType] = existsSync(directory) ? readdirSync(directory).filter((name) => name.endsWith(".json")).sort().map((name) => this.readJson(join(directory, name))) : [];
-    }
-    return result;
-  }
-  appendConversationTurn(turn) {
-    const path = this.journalPath(turn.session_id);
-    const existing = this.readJsonLines(path);
-    if (existing.some((item) => item.id === turn.id)) return;
-    this.appendJsonLine(path, turn);
-  }
-  journalPath(sessionId) {
-    idSchema.parse(sessionId);
-    this.ensureWorkspace();
-    return join(this.workspaceDir, "journal", `${sessionId}.jsonl`);
-  }
-  listConversationTurns(sessionId) {
-    return this.readJsonLines(this.journalPath(sessionId));
-  }
-  activeSessionMarkerPath() {
-    this.ensureWorkspace();
-    return join(this.workspaceDir, "runtime", "active-session.json");
-  }
-  setActiveSession(sessionId) {
-    const path = this.activeSessionMarkerPath();
-    if (sessionId === null) {
-      this.atomicWriteJson(path, { active: false, updated_at: this.now() });
-      this.updateManifest({ current_session_id: null });
-      return;
-    }
-    idSchema.parse(sessionId);
-    this.atomicWriteJson(path, { active: true, learning_session_id: sessionId, updated_at: this.now() });
-    this.updateManifest({ current_session_id: sessionId });
-  }
-  getActiveSessionId() {
-    const path = this.activeSessionMarkerPath();
-    if (!existsSync(path)) return null;
-    const marker = this.readJson(path);
-    return marker.active && marker.learning_session_id ? marker.learning_session_id : null;
-  }
-  knowledgeSummary() {
-    this.ensureWorkspace();
-    const counts = {};
-    let lastActivityMs = 0;
-    for (const type of ASSET_TYPES) {
-      const directory = join(this.workspaceDir, ASSET_FOLDERS[type]);
-      const names = existsSync(directory) ? readdirSync(directory).filter((name) => name.endsWith(".json")) : [];
-      counts[type] = names.length;
-      for (const name of names) {
-        try {
-          const mtimeMs = statSync(join(directory, name)).mtimeMs;
-          if (mtimeMs > lastActivityMs) lastActivityMs = mtimeMs;
-        } catch {
-        }
-      }
-    }
-    const assets = this.listAssets("learning_asset").learning_asset || [];
-    const latestAsset = assets.sort((left, right) => right.updated_at.localeCompare(left.updated_at))[0] || null;
-    return {
-      counts,
-      last_activity_at: lastActivityMs ? new Date(lastActivityMs).toISOString() : null,
-      last_learning_asset: latestAsset ? { id: latestAsset.id, title: latestAsset.title } : null
-    };
-  }
-  resetWorkspace() {
-    const removed = {};
-    const folders = /* @__PURE__ */ new Set([...Object.values(ASSET_FOLDERS), ...PERSONAL_FOLDERS]);
-    for (const folder of folders) {
-      const directory = join(this.workspaceDir, folder);
-      if (!existsSync(directory)) continue;
-      const entries = readdirSync(directory);
-      for (const name of entries) {
-        rmSync(join(directory, name), { recursive: true, force: true });
-      }
-      removed[folder.replace(/\//g, "_")] = entries.length;
-    }
-    this.ensureWorkspace();
-    this.updateManifest({ current_goal_id: null, current_session_id: null, updated_at: this.now() });
-    return { removed };
-  }
-  transactionPath(id) {
-    idSchema.parse(id);
-    this.ensureWorkspace();
-    return join(this.workspaceDir, "runtime", "transactions", `${id}.json`);
-  }
-  teacherIndexPath() {
-    this.ensureWorkspace();
-    return join(this.workspaceDir, "runtime", "teacher-index.json");
-  }
-  readTeacherIndex() {
-    const path = this.teacherIndexPath();
-    if (!existsSync(path)) return null;
-    try {
-      return this.readJson(path);
-    } catch {
-      return null;
-    }
-  }
-  writeTeacherIndex(value) {
-    this.atomicWriteJson(this.teacherIndexPath(), value);
-  }
-  backfillJournalRoundIds(sessionId, roundId) {
-    const path = this.journalPath(sessionId);
-    if (!existsSync(path)) return 0;
-    const lines = readFileSync(path, "utf8").split(/\r?\n/).filter(Boolean);
-    let changed = 0;
-    const updated = lines.map((line) => {
-      try {
-        const turn = JSON.parse(line);
-        if (turn && turn.session_id === sessionId && !turn.round_id) {
-          turn.round_id = roundId;
-          changed += 1;
-          return JSON.stringify(turn);
-        }
-      } catch {
-      }
-      return line;
-    });
-    if (changed > 0) writeFileSync(path, `${updated.join("\n")}
-`, "utf8");
-    return changed;
-  }
-  hashPayload(payload) {
-    const stable = (value) => {
-      if (Array.isArray(value)) return value.map(stable);
-      if (value && typeof value === "object") {
-        return Object.fromEntries(
-          Object.entries(value).sort(([left], [right]) => left.localeCompare(right)).map(([key, item]) => [key, stable(item)])
-        );
-      }
-      return value;
-    };
-    return createHash("sha256").update(JSON.stringify(stable(payload))).digest("hex");
-  }
-  getTransaction(id) {
-    const path = this.transactionPath(id);
-    return existsSync(path) ? this.readJson(path) : null;
-  }
-  createTransaction(kind, id, payload) {
-    const path = this.transactionPath(id);
-    const payloadHash = this.hashPayload(payload);
-    const existing = existsSync(path) ? this.readJson(path) : null;
-    if (existing?.payload_hash && existing.payload_hash !== payloadHash) {
-      throw new Error(`transaction ${id} already exists with a different payload`);
-    }
-    const now = this.now();
-    this.atomicWriteJson(path, {
-      schema_version: SCHEMA_VERSION,
-      id,
-      kind,
-      status: "prepared",
-      created_at: existing?.created_at || now,
-      updated_at: now,
-      attempt: Number(existing?.attempt || 0) + 1,
-      payload_hash: payloadHash,
-      payload
-    });
-    return path;
-  }
-  finishTransaction(path, result) {
-    const current = this.readJson(path);
-    this.atomicWriteJson(path, {
-      ...current,
-      status: "committed",
-      result,
-      updated_at: this.now()
-    });
-  }
-  failTransaction(path, error46) {
-    const current = existsSync(path) ? this.readJson(path) : {};
-    this.atomicWriteJson(path, {
-      ...current,
-      status: "failed",
-      error: error46 instanceof Error ? error46.message : String(error46),
-      updated_at: this.now()
-    });
-  }
-  backupFile(path) {
-    if (!existsSync(path)) return null;
-    const backup = `${path}.bak-${Date.now()}`;
-    copyFileSync(path, backup);
-    return backup;
-  }
-};
-
-// src/atlas.ts
-import { randomUUID as randomUUID2 } from "node:crypto";
+// src/core/atlas.ts
+import { randomUUID } from "node:crypto";
 function unique(items) {
   return [...new Set(items)];
 }
@@ -30100,12 +29701,419 @@ function healAtlas(store2) {
 }
 function makeEdgeId(store2, from, relation, to) {
   const base = `edge-${store2.slug(`${from}-${relation}-${to}`)}`.slice(0, 119);
-  return base || `edge-${randomUUID2().slice(0, 8)}`;
+  return base || `edge-${randomUUID().slice(0, 8)}`;
+}
+
+// src/core/workspace.ts
+import { dirname as dirname2, join as join2, parse as parse3, resolve as resolve2 } from "node:path";
+
+// src/core/storage.ts
+import {
+  appendFileSync,
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  realpathSync,
+  renameSync,
+  rmSync,
+  statSync,
+  writeFileSync
+} from "node:fs";
+import { basename, dirname, join, resolve } from "node:path";
+import { execFileSync } from "node:child_process";
+import { createHash, randomUUID as randomUUID2 } from "node:crypto";
+var WorkspaceStore = class {
+  rootDir;
+  canonicalRoot;
+  workspaceDir;
+  constructor(root) {
+    this.rootDir = resolve(root);
+    if (!existsSync(this.rootDir) || !statSync(this.rootDir).isDirectory()) {
+      throw new Error(`IOAYN_PROJECT_DIR is not a directory: ${this.rootDir}`);
+    }
+    this.canonicalRoot = realpathSync(this.rootDir);
+    this.workspaceDir = join(this.canonicalRoot, ".ioayn");
+  }
+  now() {
+    return (/* @__PURE__ */ new Date()).toISOString();
+  }
+  slug(input) {
+    const value = input.normalize("NFKD").toLowerCase().replace(/[^a-z0-9_-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
+    return value || `item-${this.shortHash(input)}`;
+  }
+  shortHash(input) {
+    return createHash("sha256").update(input).digest("hex").slice(0, 10);
+  }
+  git(args) {
+    try {
+      return execFileSync("git", args, {
+        cwd: this.canonicalRoot,
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "ignore"],
+        timeout: 1e4
+      }).trim();
+    } catch {
+      return null;
+    }
+  }
+  getSnapshot() {
+    const topLevel = this.git(["rev-parse", "--show-toplevel"]);
+    if (!topLevel) {
+      return {
+        project_root: this.canonicalRoot,
+        is_git_repository: false,
+        branch: "NO_GIT",
+        commit: "NO_GIT_REPOSITORY",
+        dirty: false,
+        workspace_dirty: false,
+        knowledge_dirty: false,
+        captured_at: this.now()
+      };
+    }
+    const branch = this.git(["branch", "--show-current"]) || "DETACHED_HEAD";
+    const commit = this.git(["rev-parse", "HEAD"]) || "UNKNOWN_COMMIT";
+    const status = this.git(["status", "--porcelain=v1"]);
+    const sourceStatus = this.git([
+      "status",
+      "--porcelain=v1",
+      "--",
+      ".",
+      ":(exclude).ioayn",
+      ":(exclude).ioayn/**"
+    ]);
+    const knowledgeStatus = this.git(["status", "--porcelain=v1", "--", ".ioayn"]);
+    return {
+      project_root: this.canonicalRoot,
+      git_root: resolve(topLevel),
+      is_git_repository: true,
+      branch,
+      commit,
+      dirty: Boolean(sourceStatus),
+      workspace_dirty: Boolean(status),
+      knowledge_dirty: Boolean(knowledgeStatus),
+      captured_at: this.now()
+    };
+  }
+  revision(snapshot = this.getSnapshot()) {
+    return { branch: snapshot.branch, commit: snapshot.commit, dirty: snapshot.dirty };
+  }
+  changedSourceFiles(fromCommit, toCommit) {
+    if (!fromCommit || !toCommit || fromCommit === toCommit) return [];
+    const output = this.git([
+      "diff",
+      "--name-only",
+      fromCommit,
+      toCommit,
+      "--",
+      ".",
+      ":(exclude).ioayn",
+      ":(exclude).ioayn/**"
+    ]);
+    if (output === null) return null;
+    return output.split(/\r?\n/).filter(Boolean);
+  }
+  ensureWorkspace() {
+    mkdirSync(this.workspaceDir, { recursive: true });
+    for (const folder of Object.values(ASSET_FOLDERS)) {
+      mkdirSync(join(this.workspaceDir, folder), { recursive: true });
+    }
+    for (const folder of PERSONAL_FOLDERS) {
+      mkdirSync(join(this.workspaceDir, folder), { recursive: true });
+    }
+    mkdirSync(join(this.workspaceDir, "runtime", "transactions"), { recursive: true });
+    this.ensureWorkspaceGitignore();
+    const manifestPath = join(this.workspaceDir, "manifest.json");
+    if (!existsSync(manifestPath)) {
+      const snapshot = this.getSnapshot();
+      const projectId = `${this.slug(basename(this.canonicalRoot)).slice(0, 55)}-${this.shortHash(this.canonicalRoot)}`;
+      this.atomicWriteJson(manifestPath, {
+        schema_version: SCHEMA_VERSION,
+        project_id: projectId,
+        project_root: ".",
+        created_at: this.now(),
+        updated_at: this.now(),
+        current_goal_id: null,
+        current_session_id: null,
+        initialized_revision: {
+          branch: snapshot.branch,
+          commit: snapshot.commit,
+          dirty: snapshot.dirty,
+          is_git_repository: snapshot.is_git_repository,
+          captured_at: snapshot.captured_at
+        },
+        capabilities: {
+          persistent_memory: true,
+          automatic_journal_capture: true,
+          cognitive_atlas: true,
+          recoverable_round_commit: true
+        }
+      });
+    }
+  }
+  ensureWorkspaceGitignore() {
+    const path = join(this.workspaceDir, ".gitignore");
+    const content = [
+      "# IOAYN personal learning journal and runtime state",
+      "journal/",
+      "sessions/",
+      "rounds/",
+      "checkpoints/",
+      "runtime/",
+      "*.tmp-*",
+      "*.bak-*",
+      ""
+    ].join("\n");
+    if (!existsSync(path) || readFileSync(path, "utf8") !== content) {
+      writeFileSync(path, content, "utf8");
+    }
+  }
+  manifest() {
+    this.ensureWorkspace();
+    return this.readJson(join(this.workspaceDir, "manifest.json"));
+  }
+  manifestVersion() {
+    const value = this.manifest();
+    return String(value.schema_version || "unknown");
+  }
+  updateManifest(patch) {
+    const current = this.manifest();
+    const next = { ...current, ...patch, updated_at: this.now() };
+    manifestSchema.parse(next);
+    this.atomicWriteJson(join(this.workspaceDir, "manifest.json"), next);
+  }
+  atomicWriteJson(path, value) {
+    mkdirSync(dirname(path), { recursive: true });
+    const temp = `${path}.tmp-${process.pid}-${randomUUID2()}`;
+    writeFileSync(temp, `${JSON.stringify(value, null, 2)}
+`, "utf8");
+    renameSync(temp, path);
+  }
+  appendJsonLine(path, value) {
+    mkdirSync(dirname(path), { recursive: true });
+    appendFileSync(path, `${JSON.stringify(value)}
+`, "utf8");
+  }
+  readJson(path) {
+    return JSON.parse(readFileSync(path, "utf8"));
+  }
+  readJsonLines(path) {
+    if (!existsSync(path)) return [];
+    return readFileSync(path, "utf8").split(/\r?\n/).filter(Boolean).map((line) => JSON.parse(line));
+  }
+  assetPath(type, id) {
+    idSchema.parse(id);
+    this.ensureWorkspace();
+    return join(this.workspaceDir, ASSET_FOLDERS[type], `${id}.json`);
+  }
+  saveAsset(type, value) {
+    const parsed = schemaMap[type].parse(value);
+    this.atomicWriteJson(this.assetPath(type, parsed.id), parsed);
+    return parsed;
+  }
+  getAsset(type, id) {
+    const path = this.assetPath(type, id);
+    return existsSync(path) ? this.readJson(path) : null;
+  }
+  listAssets(type) {
+    this.ensureWorkspace();
+    const types = type ? [type] : [...ASSET_TYPES];
+    const result = {};
+    for (const currentType of types) {
+      const directory = join(this.workspaceDir, ASSET_FOLDERS[currentType]);
+      result[currentType] = existsSync(directory) ? readdirSync(directory).filter((name) => name.endsWith(".json")).sort().map((name) => this.readJson(join(directory, name))) : [];
+    }
+    return result;
+  }
+  appendConversationTurn(turn) {
+    const path = this.journalPath(turn.session_id);
+    const existing = this.readJsonLines(path);
+    if (existing.some((item) => item.id === turn.id)) return;
+    this.appendJsonLine(path, turn);
+  }
+  journalPath(sessionId) {
+    idSchema.parse(sessionId);
+    this.ensureWorkspace();
+    return join(this.workspaceDir, "journal", `${sessionId}.jsonl`);
+  }
+  listConversationTurns(sessionId) {
+    return this.readJsonLines(this.journalPath(sessionId));
+  }
+  activeSessionMarkerPath() {
+    this.ensureWorkspace();
+    return join(this.workspaceDir, "runtime", "active-session.json");
+  }
+  setActiveSession(sessionId) {
+    const path = this.activeSessionMarkerPath();
+    if (sessionId === null) {
+      this.atomicWriteJson(path, { active: false, updated_at: this.now() });
+      this.updateManifest({ current_session_id: null });
+      return;
+    }
+    idSchema.parse(sessionId);
+    this.atomicWriteJson(path, { active: true, learning_session_id: sessionId, updated_at: this.now() });
+    this.updateManifest({ current_session_id: sessionId });
+  }
+  getActiveSessionId() {
+    const path = this.activeSessionMarkerPath();
+    if (!existsSync(path)) return null;
+    const marker = this.readJson(path);
+    return marker.active && marker.learning_session_id ? marker.learning_session_id : null;
+  }
+  knowledgeSummary() {
+    this.ensureWorkspace();
+    const counts = {};
+    let lastActivityMs = 0;
+    for (const type of ASSET_TYPES) {
+      const directory = join(this.workspaceDir, ASSET_FOLDERS[type]);
+      const names = existsSync(directory) ? readdirSync(directory).filter((name) => name.endsWith(".json")) : [];
+      counts[type] = names.length;
+      for (const name of names) {
+        try {
+          const mtimeMs = statSync(join(directory, name)).mtimeMs;
+          if (mtimeMs > lastActivityMs) lastActivityMs = mtimeMs;
+        } catch {
+        }
+      }
+    }
+    const assets = this.listAssets("learning_asset").learning_asset || [];
+    const latestAsset = assets.sort((left, right) => right.updated_at.localeCompare(left.updated_at))[0] || null;
+    return {
+      counts,
+      last_activity_at: lastActivityMs ? new Date(lastActivityMs).toISOString() : null,
+      last_learning_asset: latestAsset ? { id: latestAsset.id, title: latestAsset.title } : null
+    };
+  }
+  resetWorkspace() {
+    const removed = {};
+    const folders = /* @__PURE__ */ new Set([...Object.values(ASSET_FOLDERS), ...PERSONAL_FOLDERS]);
+    for (const folder of folders) {
+      const directory = join(this.workspaceDir, folder);
+      if (!existsSync(directory)) continue;
+      const entries = readdirSync(directory);
+      for (const name of entries) {
+        rmSync(join(directory, name), { recursive: true, force: true });
+      }
+      removed[folder.replace(/\//g, "_")] = entries.length;
+    }
+    this.ensureWorkspace();
+    this.updateManifest({ current_goal_id: null, current_session_id: null, updated_at: this.now() });
+    return { removed };
+  }
+  transactionPath(id) {
+    idSchema.parse(id);
+    this.ensureWorkspace();
+    return join(this.workspaceDir, "runtime", "transactions", `${id}.json`);
+  }
+  teacherIndexPath() {
+    this.ensureWorkspace();
+    return join(this.workspaceDir, "runtime", "teacher-index.json");
+  }
+  readTeacherIndex() {
+    const path = this.teacherIndexPath();
+    if (!existsSync(path)) return null;
+    try {
+      return this.readJson(path);
+    } catch {
+      return null;
+    }
+  }
+  writeTeacherIndex(value) {
+    this.atomicWriteJson(this.teacherIndexPath(), value);
+  }
+  backfillJournalRoundIds(sessionId, roundId) {
+    const path = this.journalPath(sessionId);
+    if (!existsSync(path)) return 0;
+    const lines = readFileSync(path, "utf8").split(/\r?\n/).filter(Boolean);
+    let changed = 0;
+    const updated = lines.map((line) => {
+      try {
+        const turn = JSON.parse(line);
+        if (turn && turn.session_id === sessionId && !turn.round_id) {
+          turn.round_id = roundId;
+          changed += 1;
+          return JSON.stringify(turn);
+        }
+      } catch {
+      }
+      return line;
+    });
+    if (changed > 0) writeFileSync(path, `${updated.join("\n")}
+`, "utf8");
+    return changed;
+  }
+  hashPayload(payload) {
+    const stable = (value) => {
+      if (Array.isArray(value)) return value.map(stable);
+      if (value && typeof value === "object") {
+        return Object.fromEntries(
+          Object.entries(value).sort(([left], [right]) => left.localeCompare(right)).map(([key, item]) => [key, stable(item)])
+        );
+      }
+      return value;
+    };
+    return createHash("sha256").update(JSON.stringify(stable(payload))).digest("hex");
+  }
+  getTransaction(id) {
+    const path = this.transactionPath(id);
+    return existsSync(path) ? this.readJson(path) : null;
+  }
+  createTransaction(kind, id, payload) {
+    const path = this.transactionPath(id);
+    const payloadHash = this.hashPayload(payload);
+    const existing = existsSync(path) ? this.readJson(path) : null;
+    if (existing?.payload_hash && existing.payload_hash !== payloadHash) {
+      throw new Error(`transaction ${id} already exists with a different payload`);
+    }
+    const now = this.now();
+    this.atomicWriteJson(path, {
+      schema_version: SCHEMA_VERSION,
+      id,
+      kind,
+      status: "prepared",
+      created_at: existing?.created_at || now,
+      updated_at: now,
+      attempt: Number(existing?.attempt || 0) + 1,
+      payload_hash: payloadHash,
+      payload
+    });
+    return path;
+  }
+  finishTransaction(path, result) {
+    const current = this.readJson(path);
+    this.atomicWriteJson(path, {
+      ...current,
+      status: "committed",
+      result,
+      updated_at: this.now()
+    });
+  }
+  failTransaction(path, error46) {
+    const current = existsSync(path) ? this.readJson(path) : {};
+    this.atomicWriteJson(path, {
+      ...current,
+      status: "failed",
+      error: error46 instanceof Error ? error46.message : String(error46),
+      updated_at: this.now()
+    });
+  }
+  backupFile(path) {
+    if (!existsSync(path)) return null;
+    const backup = `${path}.bak-${Date.now()}`;
+    copyFileSync(path, backup);
+    return backup;
+  }
+};
+
+// src/core/workspace.ts
+function createStore(rootDir2) {
+  return new WorkspaceStore(resolve2(rootDir2));
 }
 
 // src/index.ts
-var rootDir = resolve2(process.env.IOAYN_PROJECT_DIR || process.cwd());
-var store = new WorkspaceStore(rootDir);
+var rootDir = resolve3(process.env.IOAYN_PROJECT_DIR || process.cwd());
+var store = createStore(rootDir);
 function textResult(value) {
   return {
     content: [{ type: "text", text: JSON.stringify(value, null, 2) }]
@@ -30262,7 +30270,7 @@ server.registerTool(
   },
   async () => {
     store.ensureWorkspace();
-    const manifestPath = join2(store.workspaceDir, "manifest.json");
+    const manifestPath = join3(store.workspaceDir, "manifest.json");
     const manifest = store.manifest();
     const fromVersion = String(manifest.schema_version || "unknown");
     if (fromVersion === SCHEMA_VERSION) {
@@ -31384,11 +31392,11 @@ server.registerTool(
     for (const type of ASSET_TYPES) {
       ids[type] = /* @__PURE__ */ new Set();
       parsed[type] = [];
-      const folder = join2(store.workspaceDir, ASSET_FOLDERS[type]);
+      const folder = join3(store.workspaceDir, ASSET_FOLDERS[type]);
       const files = existsSync2(folder) ? readdirSync2(folder).filter((name) => name.endsWith(".json")) : [];
       for (const file2 of files) {
         try {
-          const item = schemaMap[type].parse(store.readJson(join2(folder, file2)));
+          const item = schemaMap[type].parse(store.readJson(join3(folder, file2)));
           ids[type].add(item.id);
           parsed[type].push(item);
         } catch (error46) {
@@ -31561,7 +31569,7 @@ function walkDirectories(base, depth) {
   }
   for (const entry of entries) {
     if (!entry.isDirectory() || INDEX_SKIP_DIRS.has(entry.name)) continue;
-    const path = join2(base, entry.name);
+    const path = join3(base, entry.name);
     out.push(path);
     if (depth > 0) out.push(...walkDirectories(path, depth - 1));
   }
@@ -31573,7 +31581,7 @@ function scanProjectIndex() {
   const scanPackages = (base) => {
     if (!existsSync2(base)) return;
     for (const dir of [base, ...walkDirectories(base, 3)]) {
-      const manifestPath = join2(dir, "package.json");
+      const manifestPath = join3(dir, "package.json");
       if (!existsSync2(manifestPath)) continue;
       try {
         const raw = JSON.parse(readFileSync2(manifestPath, "utf8"));
@@ -31588,8 +31596,8 @@ function scanProjectIndex() {
       }
     }
   };
-  scanPackages(join2(root, "packages"));
-  scanPackages(join2(root, "apps"));
+  scanPackages(join3(root, "packages"));
+  scanPackages(join3(root, "apps"));
   const docs = [];
   const scanDocs = (base) => {
     if (!existsSync2(base)) return;
@@ -31601,7 +31609,7 @@ function scanProjectIndex() {
         continue;
       }
       for (const name of entries.filter((item) => item.endsWith(".md"))) {
-        const path = join2(dir, name);
+        const path = join3(dir, name);
         try {
           const text = readFileSync2(path, "utf8");
           const title = text.match(/^#\s+(.+)$/m)?.[1] ?? name;
@@ -31612,14 +31620,14 @@ function scanProjectIndex() {
       }
     }
   };
-  scanDocs(join2(root, "docs"));
+  scanDocs(join3(root, "docs"));
   const notes = [];
-  const notesBase = join2(root, ".agents", "notes");
+  const notesBase = join3(root, ".agents", "notes");
   if (existsSync2(notesBase)) {
     for (const dir of walkDirectories(notesBase, 4)) {
       try {
         for (const name of readdirSync2(dir).filter((item) => item.endsWith(".md"))) {
-          notes.push(relative(root, join2(dir, name)).replaceAll("\\", "/"));
+          notes.push(relative(root, join3(dir, name)).replaceAll("\\", "/"));
         }
       } catch {
       }

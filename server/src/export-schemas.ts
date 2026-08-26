@@ -13,7 +13,7 @@ import {
   atlasNodeSchema,
   atlasEdgeSchema,
   manifestSchema,
-} from "./schemas.js";
+} from "./core/schemas.js";
 
 const out = resolve(process.argv[2] || "../schemas");
 mkdirSync(out, { recursive: true });

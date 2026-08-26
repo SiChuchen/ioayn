@@ -16,7 +16,7 @@ import {
   UNKNOWN_CLASSIFICATIONS,
   VERSION,
   type AssetType,
-} from "./constants.js";
+} from "./core/constants.js";
 import {
   abstractionLevelSchema,
   atlasEdgeSchema,
@@ -49,8 +49,8 @@ import {
   type Session,
   type Slice,
   type Unknown,
-} from "./schemas.js";
-import { WorkspaceStore } from "./storage.js";
+} from "./core/schemas.js";
+import { WorkspaceStore } from "./core/storage.js";
 import {
   buildAtlasProjection,
   ensureConcepts,
@@ -61,10 +61,11 @@ import {
   makeEdgeId,
   upsertAtlasEdge,
   upsertAtlasNode,
-} from "./atlas.js";
+} from "./core/atlas.js";
+import { createStore } from "./core/workspace.js";
 
 const rootDir = resolve(process.env.IOAYN_PROJECT_DIR || process.cwd());
-const store = new WorkspaceStore(rootDir);
+const store = createStore(rootDir);
 
 function textResult(value: unknown) {
   return {

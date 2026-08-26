@@ -24,9 +24,11 @@ const required = [
   'agents/learning-tutor.md',
   'agents/knowledge-curator.md',
   'server/src/index.ts',
-  'server/src/schemas.ts',
-  'server/src/storage.ts',
-  'server/src/atlas.ts',
+  'server/src/core/constants.ts',
+  'server/src/core/schemas.ts',
+  'server/src/core/storage.ts',
+  'server/src/core/atlas.ts',
+  'server/src/core/workspace.ts',
   'server/src/validate-fixtures.ts',
   'server/dist/index.js',
   'schemas/learning-session.schema.json',
@@ -132,7 +134,7 @@ if (readFileSync(join(root, 'VERSION'), 'utf8').trim() !== RELEASE_VERSION) {
 }
 if (buildInfo.version !== RELEASE_VERSION) failures.push(`BUILD_INFO version must be ${RELEASE_VERSION}`);
 if (evals.version !== SCHEMA_VERSION) failures.push(`eval version must be ${SCHEMA_VERSION}`);
-const constantsText = readFileSync(join(root, 'server/src/constants.ts'), 'utf8');
+const constantsText = readFileSync(join(root, 'server/src/core/constants.ts'), 'utf8');
 const constantsVersion = constantsText.match(/export const VERSION = "([^"]+)"/)?.[1];
 if (constantsVersion !== RELEASE_VERSION) {
   failures.push(`server VERSION constant must be ${RELEASE_VERSION} (found ${constantsVersion || 'none'})`);
